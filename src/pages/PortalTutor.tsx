@@ -70,14 +70,16 @@ export default function PortalTutor() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b bg-gradient-to-r from-card to-primary/5 backdrop-blur-sm shadow-lg">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Heart className="h-8 w-8 text-red-500" />
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-primary rounded-xl shadow-md">
+                <Heart className="h-6 w-6 text-primary-foreground" />
+              </div>
               <div>
-                <h1 className="text-2xl font-bold">Portal do Tutor</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-2xl font-bold text-foreground">Portal do Tutor</h1>
+                <p className="text-muted-foreground">
                   Bem-vindo, {acessoTutor?.tutor?.nome}
                 </p>
               </div>

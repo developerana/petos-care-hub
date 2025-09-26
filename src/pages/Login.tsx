@@ -38,15 +38,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/30 to-primary/10 p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <Heart className="h-8 w-8 text-red-500" />
-            <h1 className="text-3xl font-bold text-gray-900">PetOS</h1>
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+            <Heart className="h-8 w-8 text-primary-foreground" />
           </div>
-          <p className="text-gray-600">Sistema de Gestão Veterinária</p>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">PetOS</h1>
+            <p className="text-muted-foreground mt-2">Sistema de Gestão Veterinária</p>
+          </div>
         </div>
 
         <Tabs defaultValue="staff" className="w-full">
