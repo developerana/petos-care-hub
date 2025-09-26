@@ -14,7 +14,187 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      consultas: {
+        Row: {
+          anamnese: string | null
+          data_cadastro: string
+          data_consulta: string
+          diagnostico: string | null
+          hora_consulta: string
+          id: string
+          id_pet: string
+          id_veterinario: string
+          status: string
+          tratamento: string | null
+        }
+        Insert: {
+          anamnese?: string | null
+          data_cadastro?: string
+          data_consulta: string
+          diagnostico?: string | null
+          hora_consulta: string
+          id?: string
+          id_pet: string
+          id_veterinario: string
+          status?: string
+          tratamento?: string | null
+        }
+        Update: {
+          anamnese?: string | null
+          data_cadastro?: string
+          data_consulta?: string
+          diagnostico?: string | null
+          hora_consulta?: string
+          id?: string
+          id_pet?: string
+          id_veterinario?: string
+          status?: string
+          tratamento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultas_id_pet_fkey"
+            columns: ["id_pet"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_id_veterinario_fkey"
+            columns: ["id_veterinario"]
+            isOneToOne: false
+            referencedRelation: "veterinarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pets: {
+        Row: {
+          data_cadastro: string
+          data_nascimento: string
+          especie: string
+          id: string
+          id_tutor: string
+          nome: string
+          raca: string | null
+        }
+        Insert: {
+          data_cadastro?: string
+          data_nascimento: string
+          especie: string
+          id?: string
+          id_tutor: string
+          nome: string
+          raca?: string | null
+        }
+        Update: {
+          data_cadastro?: string
+          data_nascimento?: string
+          especie?: string
+          id?: string
+          id_tutor?: string
+          nome?: string
+          raca?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pets_id_tutor_fkey"
+            columns: ["id_tutor"]
+            isOneToOne: false
+            referencedRelation: "tutores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tutores: {
+        Row: {
+          data_cadastro: string
+          email: string
+          id: string
+          nome: string
+          telefone: string
+        }
+        Insert: {
+          data_cadastro?: string
+          email: string
+          id?: string
+          nome: string
+          telefone: string
+        }
+        Update: {
+          data_cadastro?: string
+          email?: string
+          id?: string
+          nome?: string
+          telefone?: string
+        }
+        Relationships: []
+      }
+      vacinas: {
+        Row: {
+          data_aplicacao: string
+          data_cadastro: string
+          id: string
+          id_pet: string
+          nome_vacina: string
+          observacoes: string | null
+          proxima_dose: string | null
+        }
+        Insert: {
+          data_aplicacao: string
+          data_cadastro?: string
+          id?: string
+          id_pet: string
+          nome_vacina: string
+          observacoes?: string | null
+          proxima_dose?: string | null
+        }
+        Update: {
+          data_aplicacao?: string
+          data_cadastro?: string
+          id?: string
+          id_pet?: string
+          nome_vacina?: string
+          observacoes?: string | null
+          proxima_dose?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vacinas_id_pet_fkey"
+            columns: ["id_pet"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      veterinarios: {
+        Row: {
+          ativo: boolean
+          data_cadastro: string
+          email: string
+          especialidade: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          ativo?: boolean
+          data_cadastro?: string
+          email: string
+          especialidade: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          ativo?: boolean
+          data_cadastro?: string
+          email?: string
+          especialidade?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
