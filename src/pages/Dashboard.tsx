@@ -9,11 +9,13 @@ import {
 import { usePets } from "@/hooks/usePets";
 import { useConsultasHoje } from "@/hooks/useConsultas";
 import { useVacinasPendentes } from "@/hooks/useVacinas";
+import { useAuthContext } from "@/components/AuthProvider";
 
 export default function Dashboard() {
   const { data: pets = [], isLoading } = usePets();
   const { data: consultasHoje = 0 } = useConsultasHoje();
   const { data: vacinasPendentes = [] } = useVacinasPendentes();
+  const { usuario } = useAuthContext();
 
   if (isLoading) {
     return (
@@ -32,7 +34,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">
-            Visão geral da clínica veterinária
+            Bem-vindo, {usuario?.nome} ({usuario?.tipo_perfil})
           </p>
         </div>
 

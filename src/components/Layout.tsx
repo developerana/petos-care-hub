@@ -2,16 +2,18 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   Home, 
   Users, 
   Heart, 
   Stethoscope, 
   Calendar, 
-  FileText,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuthContext } from "@/components/AuthProvider";
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,6 +29,7 @@ const navItems = [
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const { usuario, signOut } = useAuthContext();
 
   const NavContent = () => (
     <nav className="space-y-2 p-4">
@@ -48,6 +51,32 @@ export default function Layout({ children }: LayoutProps) {
           </Button>
         </Link>
       ))}
+      
+      {/* User Info and Logout */}
+      <div className="pt-4 mt-4 border-t space-y-2">
+        <div className="flex items-center gap-2 px-2">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="text-xs">
+              {usuario?.nome?.charAt(0)?.toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{usuario?.nome}</p>
+            <p className="text-xs text-muted-foreground capitalize">
+              {usuario?.tipo_perfil}
+            </p>
+          </div>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={signOut}
+          className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <LogOut className="h-4 w-4" />
+          Sair
+        </Button>
+      </div>
     </nav>
   );
 

@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      acessos_tutores: {
+        Row: {
+          ativo: boolean
+          data_criacao: string
+          email: string
+          id: string
+          id_tutor: string
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          data_criacao?: string
+          email: string
+          id?: string
+          id_tutor: string
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          data_criacao?: string
+          email?: string
+          id?: string
+          id_tutor?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acessos_tutores_id_tutor_fkey"
+            columns: ["id_tutor"]
+            isOneToOne: false
+            referencedRelation: "tutores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consultas: {
         Row: {
           anamnese: string | null
@@ -64,6 +99,143 @@ export type Database = {
             columns: ["id_veterinario"]
             isOneToOne: false
             referencedRelation: "veterinarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      horarios_disponiveis: {
+        Row: {
+          data: string
+          data_criacao: string
+          disponivel: boolean
+          hora_fim: string
+          hora_inicio: string
+          id: string
+          id_veterinario: string
+          observacoes: string | null
+        }
+        Insert: {
+          data: string
+          data_criacao?: string
+          disponivel?: boolean
+          hora_fim: string
+          hora_inicio: string
+          id?: string
+          id_veterinario: string
+          observacoes?: string | null
+        }
+        Update: {
+          data?: string
+          data_criacao?: string
+          disponivel?: boolean
+          hora_fim?: string
+          hora_inicio?: string
+          id?: string
+          id_veterinario?: string
+          observacoes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horarios_disponiveis_id_veterinario_fkey"
+            columns: ["id_veterinario"]
+            isOneToOne: false
+            referencedRelation: "veterinarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mensagens: {
+        Row: {
+          data_envio: string
+          id: string
+          id_tutor: string
+          id_usuario: string | null
+          lida: boolean
+          mensagem: string
+          remetente: string
+        }
+        Insert: {
+          data_envio?: string
+          id?: string
+          id_tutor: string
+          id_usuario?: string | null
+          lida?: boolean
+          mensagem: string
+          remetente: string
+        }
+        Update: {
+          data_envio?: string
+          id?: string
+          id_tutor?: string
+          id_usuario?: string | null
+          lida?: boolean
+          mensagem?: string
+          remetente?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_id_tutor_fkey"
+            columns: ["id_tutor"]
+            isOneToOne: false
+            referencedRelation: "tutores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_id_usuario_fkey"
+            columns: ["id_usuario"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notificacoes: {
+        Row: {
+          data_envio: string
+          data_leitura: string | null
+          id: string
+          id_tutor: string | null
+          id_usuario: string | null
+          lida: boolean
+          mensagem: string
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          data_envio?: string
+          data_leitura?: string | null
+          id?: string
+          id_tutor?: string | null
+          id_usuario?: string | null
+          lida?: boolean
+          mensagem: string
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          data_envio?: string
+          data_leitura?: string | null
+          id?: string
+          id_tutor?: string | null
+          id_usuario?: string | null
+          lida?: boolean
+          mensagem?: string
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_id_tutor_fkey"
+            columns: ["id_tutor"]
+            isOneToOne: false
+            referencedRelation: "tutores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notificacoes_id_usuario_fkey"
+            columns: ["id_usuario"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
         ]
@@ -129,6 +301,47 @@ export type Database = {
           telefone?: string
         }
         Relationships: []
+      }
+      usuarios: {
+        Row: {
+          ativo: boolean
+          data_criacao: string
+          email: string
+          id: string
+          id_veterinario: string | null
+          nome: string
+          tipo_perfil: string
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          data_criacao?: string
+          email: string
+          id?: string
+          id_veterinario?: string | null
+          nome: string
+          tipo_perfil: string
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          data_criacao?: string
+          email?: string
+          id?: string
+          id_veterinario?: string | null
+          nome?: string
+          tipo_perfil?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usuarios_id_veterinario_fkey"
+            columns: ["id_veterinario"]
+            isOneToOne: false
+            referencedRelation: "veterinarios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vacinas: {
         Row: {
