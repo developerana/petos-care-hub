@@ -48,94 +48,109 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/30 to-primary/10 p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <Heart className="h-8 w-8 text-red-500" />
-            <h1 className="text-3xl font-bold text-gray-900">PetOS</h1>
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+            <Heart className="h-8 w-8 text-primary-foreground" />
           </div>
-          <p className="text-gray-600">Cadastro de Funcionário</p>
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">PetOS</h1>
+            <p className="text-muted-foreground mt-2">Cadastro de Funcionário</p>
+          </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Criar Conta - Funcionário</CardTitle>
+        <Card className="border-0 shadow-2xl bg-card/80 backdrop-blur-sm">
+          <CardHeader className="space-y-4 pb-6">
+            <CardTitle className="text-2xl font-bold text-center">Criar Conta - Funcionário</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="nome">Nome Completo</Label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="nome" className="text-sm font-medium">Nome Completo</Label>
                 <Input
                   id="nome"
                   value={formData.nome}
                   onChange={(e) => setFormData({...formData, nome: e.target.value})}
+                  className="h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                  placeholder="Digite seu nome completo"
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="email">E-mail</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">E-mail</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
                   placeholder="admin@clinic.com"
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="tipo_perfil">Tipo de Perfil</Label>
+              <div className="space-y-2">
+                <Label htmlFor="tipo_perfil" className="text-sm font-medium">Tipo de Perfil</Label>
                 <Select value={formData.tipo_perfil} onValueChange={(value) => setFormData({...formData, tipo_perfil: value})}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-12 border-0 bg-muted/50 focus:bg-background">
                     <SelectValue placeholder="Selecione o perfil" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">Administrador</SelectItem>
+                    <SelectItem value="administrador">Administrador</SelectItem>
                     <SelectItem value="veterinario">Veterinário</SelectItem>
                     <SelectItem value="recepcionista">Recepcionista</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="password">Senha</Label>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">Senha</Label>
                 <Input
                   id="password"
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                  placeholder="Crie uma senha segura"
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="confirmPassword">Confirmar Senha</Label>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirmar Senha</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  className="h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                  placeholder="Repita sua senha"
                   required
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full h-12 text-base font-semibold shadow-lg"
                 disabled={loading}
               >
                 {loading ? "Criando conta..." : "Criar Conta"}
               </Button>
             </form>
-            <div className="mt-4 text-center">
-              <p className="text-sm text-gray-600">
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
                 Já tem uma conta?{" "}
-                <Link to="/login" className="text-blue-600 hover:underline">
+                <Link to="/login" className="text-primary hover:underline font-medium">
                   Faça login aqui
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
+        
+        <div className="text-center mt-8">
+          <p className="text-xs text-muted-foreground">
+            © 2024 PetOS - Sistema de Gestão Veterinária
+          </p>
+        </div>
       </div>
     </div>
   );
