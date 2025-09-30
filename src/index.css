@@ -18,8 +18,8 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
 
-    /* Primary - Verde da sidebar */
-    --primary: 158 64% 40%;
+    /* Primary - Verde suave */
+    --primary: 158 50% 45%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Cinza claro */
@@ -30,22 +30,22 @@ All colors MUST be HSL.
     --muted: 0 0% 92%;
     --muted-foreground: 0 0% 45%;
 
-    /* Accent - Verde claro */
-    --accent: 158 45% 85%;
-    --accent-foreground: 158 64% 25%;
+    /* Accent - Verde muito claro */
+    --accent: 158 35% 90%;
+    --accent-foreground: 158 50% 30%;
 
     /* Destructive - Vermelho */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     /* Cores de status e botões */
-    --success: 158 64% 40%;
+    --success: 158 50% 45%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 45 93% 58%;
+    --warning: 45 85% 55%;
     --warning-foreground: 0 0% 15%;
     
-    --info: 217 91% 60%;
+    --info: 217 80% 55%;
     --info-foreground: 0 0% 100%;
 
     /* Borders e inputs */
