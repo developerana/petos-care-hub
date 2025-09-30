@@ -99,7 +99,10 @@ export default function Layout({ children }: LayoutProps) {
         variant="ghost"
         size="icon"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="hidden md:flex fixed top-4 left-4 z-40"
+        className={cn(
+          "hidden md:flex fixed top-4 z-40 transition-all duration-300",
+          sidebarOpen ? "left-[232px]" : "left-4"
+        )}
       >
         <Menu className="h-5 w-5" />
       </Button>
