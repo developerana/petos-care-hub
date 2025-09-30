@@ -10,13 +10,18 @@ import {
   Plus,
   CalendarCheck,
   Search,
-  Settings
+  Settings,
+  Stethoscope,
+  UserCog,
+  Users,
+  PawPrint
 } from "lucide-react";
 import { usePets } from "@/hooks/usePets";
 import { useConsultasHoje } from "@/hooks/useConsultas";
 import { useVacinasPendentes } from "@/hooks/useVacinas";
 import { Input } from "@/components/ui/input";
 import { AgendarConsultaDialog } from "@/components/consultas/AgendarConsultaDialog";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { data: pets = [], isLoading } = usePets();
@@ -138,7 +143,63 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Pets Recentes */}
+        {/* Gerenciamento de Usuários */}
+        <Card className="border-none shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg">Gerenciamento de Usuários</CardTitle>
+            <p className="text-sm text-muted-foreground">Cadastre e gerencie os profissionais da clínica</p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Equipe da Clínica */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">Equipe da Clínica</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Link to="/veterinarios">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex flex-col gap-2 hover:border-success hover:bg-success/5"
+                  >
+                    <Stethoscope className="h-5 w-5 text-success" />
+                    <span className="font-medium">Cadastrar Veterinários</span>
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full h-20 flex flex-col gap-2 hover:border-info hover:bg-info/5"
+                >
+                  <UserCog className="h-5 w-5 text-info" />
+                  <span className="font-medium">Cadastrar Recepcionistas</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Clientes */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">Clientes</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Link to="/tutores">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex flex-col gap-2 hover:border-success hover:bg-success/5"
+                  >
+                    <Users className="h-5 w-5 text-success" />
+                    <span className="font-medium">Cadastrar Tutores</span>
+                  </Button>
+                </Link>
+                <Link to="/pets">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex flex-col gap-2 hover:border-success hover:bg-success/5"
+                  >
+                    <PawPrint className="h-5 w-5 text-success" />
+                    <span className="font-medium">Cadastrar Pets</span>
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="border-none shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Pets Recentes</CardTitle>
