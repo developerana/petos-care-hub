@@ -35,8 +35,19 @@ export default function Layout({ children }: LayoutProps) {
     console.log("Logout");
   };
 
-  const NavContent = () => (
+  const NavContent = ({ showToggle = false }: { showToggle?: boolean }) => (
     <nav className="flex flex-col h-full p-4">
+      {showToggle && (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="self-end mb-2"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+      )}
+      
       <div className="pb-6 mb-6 border-b border-white/20">
         <h2 className="text-xl font-bold text-foreground">PetOS</h2>
         <p className="text-sm text-muted-foreground">Administrador</p>
@@ -79,7 +90,7 @@ export default function Layout({ children }: LayoutProps) {
           sidebarOpen ? "w-64" : "w-0 overflow-hidden"
         )}
       >
-        <NavContent />
+        <NavContent showToggle={true} />
       </aside>
 
       {/* Mobile Sidebar */}
@@ -94,18 +105,6 @@ export default function Layout({ children }: LayoutProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Hamburger Menu for Desktop */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className={cn(
-          "hidden md:flex fixed top-4 z-40 transition-all duration-300",
-          sidebarOpen ? "left-[232px]" : "left-4"
-        )}
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
 
       {/* Main Content */}
       <main 
