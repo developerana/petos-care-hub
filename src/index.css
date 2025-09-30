@@ -18,7 +18,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
 
-    /* Primary - Verde suave */
+    /* Primary - Verde da sidebar */
     --primary: 158 64% 40%;
     --primary-foreground: 0 0% 100%;
 
@@ -54,6 +54,16 @@ All colors MUST be HSL.
     --ring: 158 64% 40%;
 
     --radius: 0.5rem;
+
+    /* Sidebar - Verde escuro */
+    --sidebar-background: 158 64% 40%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 158 64% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 64% 35%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 158 64% 35%;
+    --sidebar-ring: 158 64% 60%;
   }
 
   .dark {
