@@ -16,6 +16,7 @@ import { usePets } from "@/hooks/usePets";
 import { useConsultasHoje } from "@/hooks/useConsultas";
 import { useVacinasPendentes } from "@/hooks/useVacinas";
 import { Input } from "@/components/ui/input";
+import { AgendarConsultaDialog } from "@/components/consultas/AgendarConsultaDialog";
 
 export default function Dashboard() {
   const { data: pets = [], isLoading } = usePets();
@@ -120,10 +121,12 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
-            <Button className="bg-success hover:bg-success/90">
-              <Plus className="h-4 w-4 mr-2" />
-              Agendar Consulta
-            </Button>
+            <AgendarConsultaDialog>
+              <Button className="bg-success hover:bg-success/90">
+                <Plus className="h-4 w-4 mr-2" />
+                Agendar Consulta
+              </Button>
+            </AgendarConsultaDialog>
             <Button className="bg-info hover:bg-info/90">
               <CalendarCheck className="h-4 w-4 mr-2" />
               Ver Agenda
