@@ -57,12 +57,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Cores específicas do tema verde
-        success: "hsl(var(--primary))",
-        "success-foreground": "hsl(var(--primary-foreground))",
-        nature: "hsl(130 70% 45%)",
-        "nature-light": "hsl(120 40% 85%)",
-        "nature-dark": "hsl(140 90% 15%)",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",

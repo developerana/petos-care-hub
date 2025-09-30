@@ -1,14 +1,21 @@
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Heart, 
   Calendar, 
   Syringe, 
-  Clock
+  Bell,
+  Plus,
+  CalendarCheck,
+  Search,
+  Settings
 } from "lucide-react";
 import { usePets } from "@/hooks/usePets";
 import { useConsultasHoje } from "@/hooks/useConsultas";
 import { useVacinasPendentes } from "@/hooks/useVacinas";
+import { Input } from "@/components/ui/input";
 
 export default function Dashboard() {
   const { data: pets = [], isLoading } = usePets();
@@ -28,88 +35,139 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Visão geral da clínica veterinária
-          </p>
+        {/* Header com busca */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <p className="text-muted-foreground">
+              Bem-vindo ao painel administrativo do PetOS
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar pets, tutores, agendamentos..."
+                className="pl-10"
+              />
+            </div>
+            <Button size="icon" variant="ghost">
+              <Bell className="h-5 w-5" />
+            </Button>
+            <Button size="icon" variant="ghost">
+              <Settings className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Cards de Métricas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
+          <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total de Pets</CardTitle>
-              <Heart className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total de Pets</CardTitle>
+              <div className="p-3 rounded-full bg-success/10">
+                <Heart className="h-5 w-5 text-success" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{pets.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Pets cadastrados
-              </p>
+              <div className="text-4xl font-bold">{pets.length}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Consultas Hoje</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Consultas Hoje</CardTitle>
+              <div className="p-3 rounded-full bg-info/10">
+                <Calendar className="h-5 w-5 text-info" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{consultasHoje}</div>
-              <p className="text-xs text-muted-foreground">
-                Agendadas para hoje
-              </p>
+              <div className="text-4xl font-bold">{consultasHoje}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Vacinas Pendentes</CardTitle>
-              <Syringe className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Vacinas Pendentes</CardTitle>
+              <div className="p-3 rounded-full bg-warning/10">
+                <Syringe className="h-5 w-5 text-warning" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{vacinasPendentes.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Requerem atenção
-              </p>
+              <div className="text-4xl font-bold">{vacinasPendentes.length}</div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sistema Ativo</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Próximos Agendamentos</CardTitle>
+              <div className="p-3 rounded-full bg-destructive/10">
+                <Bell className="h-5 w-5 text-destructive" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">OK</div>
-              <p className="text-xs text-muted-foreground">
-                Funcionando
-              </p>
+              <div className="text-4xl font-bold">24</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Lista de Pets Simples */}
-        <Card>
+        {/* Ações Rápidas */}
+        <Card className="border-none shadow-sm">
           <CardHeader>
-            <CardTitle>Pets Cadastrados</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Ações Rápidas
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-3">
+            <Button className="bg-success hover:bg-success/90">
+              <Plus className="h-4 w-4 mr-2" />
+              Agendar Consulta
+            </Button>
+            <Button className="bg-info hover:bg-info/90">
+              <CalendarCheck className="h-4 w-4 mr-2" />
+              Ver Agenda
+            </Button>
+            <Button className="bg-warning hover:bg-warning/90 text-warning-foreground">
+              <Bell className="h-4 w-4 mr-2" />
+              Notificações
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Pets Recentes */}
+        <Card className="border-none shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg">Pets Recentes</CardTitle>
+            <p className="text-sm text-muted-foreground">Últimos pets cadastrados no sistema</p>
           </CardHeader>
           <CardContent>
             {pets.length > 0 ? (
-              <div className="space-y-2">
-                {pets.slice(0, 5).map((pet) => (
-                  <div key={pet.id} className="p-2 border rounded">
-                    <p className="font-medium">{pet.nome}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {pet.especie} - Tutor: {pet.tutor?.nome}
-                    </p>
+              <div className="space-y-3">
+                {pets.slice(0, 5).map((pet, index) => (
+                  <div key={pet.id} className="flex items-center justify-between p-4 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-full bg-success/10">
+                        <Heart className="h-5 w-5 text-success" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{pet.nome}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {pet.especie} - Tutor: {pet.tutor?.nome}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge className={index % 2 === 0 ? "bg-success hover:bg-success" : "bg-destructive hover:bg-destructive"}>
+                        {index % 2 === 0 ? "Vacinas OK" : "Vacinas Atrasadas"}
+                      </Badge>
+                      <Button variant="outline" size="sm">Ver Detalhes</Button>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-center text-muted-foreground">
+              <p className="text-center text-muted-foreground py-8">
                 Nenhum pet cadastrado ainda
               </p>
             )}

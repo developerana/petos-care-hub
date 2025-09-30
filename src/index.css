@@ -8,58 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Backgrounds - Verde muito claro e branco */
-    --background: 120 20% 98%;
-    --foreground: 140 100% 8%;
+    /* Backgrounds - Cinza muito claro */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
 
-    --card: 120 30% 96%;
-    --card-foreground: 140 90% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
 
-    --popover: 120 25% 97%;
-    --popover-foreground: 140 85% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Primary - Verde escuro elegante */
-    --primary: 145 85% 25%;
-    --primary-foreground: 120 20% 98%;
+    /* Primary - Verde da sidebar */
+    --primary: 158 64% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Verde médio suave */
-    --secondary: 120 25% 88%;
-    --secondary-foreground: 145 80% 20%;
+    /* Secondary - Cinza claro */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 15%;
 
-    /* Muted - Verde acinzentado */
-    --muted: 120 15% 92%;
-    --muted-foreground: 140 25% 45%;
+    /* Muted - Cinza médio */
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent - Verde vibrante */
-    --accent: 130 60% 75%;
-    --accent-foreground: 145 90% 15%;
+    /* Accent - Verde claro */
+    --accent: 158 45% 85%;
+    --accent-foreground: 158 64% 25%;
 
-    /* Destructive - Mantém vermelho */
+    /* Destructive - Vermelho */
     --destructive: 0 84% 60%;
-    --destructive-foreground: 120 20% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Borders e inputs - Verde claro */
-    --border: 120 20% 85%;
-    --input: 120 25% 90%;
-    --ring: 145 85% 25%;
+    /* Cores de status e botões */
+    --success: 158 64% 40%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 15%;
+    
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    /* Borders e inputs */
+    --border: 0 0% 90%;
+    --input: 0 0% 94%;
+    --ring: 158 64% 40%;
 
     --radius: 0.5rem;
 
-    /* Sidebar - Tons de verde */
-    --sidebar-background: 120 25% 95%;
-    --sidebar-foreground: 140 70% 20%;
-    --sidebar-primary: 145 85% 25%;
-    --sidebar-primary-foreground: 120 20% 98%;
-    --sidebar-accent: 120 30% 88%;
-    --sidebar-accent-foreground: 145 80% 20%;
-    --sidebar-border: 120 20% 85%;
-    --sidebar-ring: 130 70% 60%;
-
-    /* Gradientes e sombras verdes */
-    --gradient-primary: linear-gradient(135deg, hsl(145 85% 25%), hsl(130 70% 35%));
-    --gradient-secondary: linear-gradient(180deg, hsl(120 25% 95%), hsl(120 30% 90%));
-    --shadow-green: 0 10px 30px -10px hsl(145 85% 25% / 0.3);
-    --glow-green: 0 0 40px hsl(130 70% 60% / 0.4);
+    /* Sidebar - Verde escuro */
+    --sidebar-background: 158 64% 40%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 158 64% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 158 64% 35%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 158 64% 35%;
+    --sidebar-ring: 158 64% 60%;
   }
 
   .dark {

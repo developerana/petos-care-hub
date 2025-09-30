@@ -29,21 +29,21 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   const NavContent = () => (
-    <nav className="space-y-2 p-4">
-      <div className="pb-4 mb-4 border-b">
-        <h2 className="text-lg font-semibold text-primary">PetOS</h2>
-        <p className="text-sm text-muted-foreground">Sistema Veterinário</p>
+    <nav className="space-y-1 p-4">
+      <div className="pb-6 mb-6 border-b border-sidebar-border">
+        <h2 className="text-xl font-bold text-sidebar-foreground">PetOS</h2>
+        <p className="text-sm text-sidebar-foreground/70">Administrador</p>
       </div>
       {navItems.map(({ path, label, icon: Icon }) => (
         <Link key={path} to={path}>
           <Button
-            variant={location.pathname === path ? "default" : "ghost"}
+            variant="ghost"
             className={cn(
-              "w-full justify-start gap-2",
-              location.pathname === path && "bg-primary text-primary-foreground"
+              "w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent",
+              location.pathname === path && "bg-sidebar-accent text-sidebar-foreground font-medium"
             )}
           >
-            <Icon className="h-4 w-4" />
+            <Icon className="h-5 w-5" />
             {label}
           </Button>
         </Link>
@@ -54,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block w-64 border-r bg-card">
+      <aside className="hidden md:block w-64 bg-sidebar">
         <NavContent />
       </aside>
 
