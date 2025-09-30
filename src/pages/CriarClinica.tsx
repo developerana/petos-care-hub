@@ -44,6 +44,15 @@ export default function CriarClinica() {
       return;
     }
 
+    if (formData.senha.length < 6) {
+      toast({
+        title: 'Erro',
+        description: 'A senha deve ter no mínimo 6 caracteres',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -62,7 +71,10 @@ export default function CriarClinica() {
         .select()
         .single();
 
-      if (clinicaError) throw clinicaError;
+      if (clinicaError) {
+        console.error('Erro ao criar clínica:', clinicaError);
+        throw new Error(clinicaError.message || 'Erro ao criar clínica');
+      }
 
       // Criar conta do administrador
       const { error: signUpError } = await signUp({
@@ -73,18 +85,24 @@ export default function CriarClinica() {
         id_clinica: clinica.id,
       });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        console.error('Erro no signup:', signUpError);
+        throw new Error(signUpError.message || 'Erro ao criar conta');
+      }
 
       toast({
         title: 'Clínica criada com sucesso!',
-        description: 'Verifique seu e-mail para confirmar o cadastro.',
+        description: 'Você já pode fazer login no sistema.',
       });
 
-      navigate('/login');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (error: any) {
+      console.error('Erro completo:', error);
       toast({
         title: 'Erro ao criar clínica',
-        description: error.message,
+        description: error.message || 'Ocorreu um erro inesperado. Tente novamente.',
         variant: 'destructive',
       });
     } finally {

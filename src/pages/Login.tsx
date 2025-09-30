@@ -18,24 +18,44 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: 'Erro',
+        description: 'Preencha todos os campos',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { error } = await signIn(email, password);
 
       if (error) {
+        console.error('Erro no login:', error);
+        let errorMessage = 'Verifique suas credenciais e tente novamente.';
+        
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'E-mail ou senha incorretos.';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Confirme seu e-mail antes de fazer login.';
+        }
+        
         toast({
           title: 'Erro ao fazer login',
-          description: error.message,
+          description: errorMessage,
           variant: 'destructive',
         });
       } else {
         toast({
           title: 'Login realizado com sucesso!',
         });
-        navigate('/');
+        // A navegação será feita automaticamente pelo ProtectedRoute
       }
     } catch (error) {
+      console.error('Erro inesperado:', error);
       toast({
         title: 'Erro inesperado',
         description: 'Ocorreu um erro ao fazer login. Tente novamente.',
