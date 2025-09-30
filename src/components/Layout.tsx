@@ -13,6 +13,7 @@ import {
   LogOut
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
 
 interface LayoutProps {
   children: ReactNode;
@@ -30,9 +31,10 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const handleLogout = () => {
-    // TODO: Implementar logout quando houver autenticação
-    console.log("Logout");
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
   };
 
   const NavContent = () => (
