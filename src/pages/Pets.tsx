@@ -252,6 +252,7 @@ export default function Pets() {
                       <Link to={`/prontuario/${pet.id}`}>
                         <Button variant="outline" size="sm">
                           <FileText className="h-4 w-4" />
+                          Prontuário
                         </Button>
                       </Link>
                     </div>
