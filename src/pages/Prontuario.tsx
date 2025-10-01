@@ -1,30 +1,42 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Layout from "@/components/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Edit, Paperclip, Heart } from "lucide-react";
+import { Plus, Syringe, Calendar, FileText, Heart, User, Phone, Mail } from "lucide-react";
 import { usePet } from "@/hooks/usePets";
+import { useConsultasByPet, useUpdateConsulta } from "@/hooks/useConsultas";
+import { useVacinasByPet, useCreateVacina } from "@/hooks/useVacinas";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-// Import tab components
-import DadosAnimalTab from "@/components/prontuario/DadosAnimalTab";
-import DadosTutorTab from "@/components/prontuario/DadosTutorTab";
-import HistoricoClinicoTab from "@/components/prontuario/HistoricoClinicoTab";
-import VacinacaoTab from "@/components/prontuario/VacinacaoTab";
-import ConsultasExamesTab from "@/components/prontuario/ConsultasExamesTab";
-import TratamentoTab from "@/components/prontuario/TratamentoTab";
-import FinanceiroTab from "@/components/prontuario/FinanceiroTab";
 
 export default function Prontuario() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { data: pet, isLoading } = usePet(id!);
-  const [activeTab, setActiveTab] = useState("dados-animal");
+  const { petId } = useParams<{ petId: string }>();
+  const [isVacinaDialogOpen, setIsVacinaDialogOpen] = useState(false);
+  const [editingConsulta, setEditingConsulta] = useState<string | null>(null);
+  const [vacinaForm, setVacinaForm] = useState({
+    nome_vacina: "",
+    data_aplicacao: "",
+    proxima_dose: "",
+    observacoes: "",
+  });
+  const [consultaForm, setConsultaForm] = useState({
+    anamnese: "",
+    diagnostico: "",
+    tratamento: "",
+  });
+
+  const { data: pet, isLoading } = usePet(petId!);
+  const { data: consultas = [] } = useConsultasByPet(petId!);
+  const { data: vacinas = [] } = useVacinasByPet(petId!);
+  const createVacina = useCreateVacina();
+  const updateConsulta = useUpdateConsulta();
 
   const calcularIdade = (dataNascimento: string) => {
     const hoje = new Date();
@@ -41,11 +53,49 @@ export default function Prontuario() {
     }
   };
 
+  const handleVacinaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await createVacina.mutateAsync({
+      id_pet: petId!,
+      ...vacinaForm,
+    });
+    setIsVacinaDialogOpen(false);
+    setVacinaForm({
+      nome_vacina: "",
+      data_aplicacao: "",
+      proxima_dose: "",
+      observacoes: "",
+    });
+  };
+
+  const handleConsultaUpdate = async (consultaId: string) => {
+    await updateConsulta.mutateAsync({
+      id: consultaId,
+      ...consultaForm,
+      status: "Realizada" as const,
+    });
+    setEditingConsulta(null);
+    setConsultaForm({
+      anamnese: "",
+      diagnostico: "",
+      tratamento: "",
+    });
+  };
+
+  const startEditingConsulta = (consulta: any) => {
+    setEditingConsulta(consulta.id);
+    setConsultaForm({
+      anamnese: consulta.anamnese || "",
+      diagnostico: consulta.diagnostico || "",
+      tratamento: consulta.tratamento || "",
+    });
+  };
+
   if (isLoading) {
     return (
       <Layout>
         <div className="flex items-center justify-center h-64">
-          <p>Carregando prontuário...</p>
+          <p>Carregando...</p>
         </div>
       </Layout>
     );
@@ -63,106 +113,289 @@ export default function Prontuario() {
 
   return (
     <Layout>
-      <div className="space-y-6 max-w-7xl mx-auto">
-        {/* Cabeçalho com foto e dados do animal */}
-        <Card className="p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-start gap-6 flex-1">
-              {/* Foto do Animal */}
-              <Avatar className="h-32 w-32">
-                <AvatarFallback className="text-4xl bg-primary/10">
-                  <Heart className="h-16 w-16 text-primary" />
-                </AvatarFallback>
-              </Avatar>
-
-              {/* Informações básicas */}
-              <div className="space-y-2 flex-1">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{pet.nome}</h1>
-                  <Badge variant="secondary">{pet.especie}</Badge>
+      <div className="space-y-6">
+        {/* Header - Informações do Pet */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <Heart className="h-8 w-8 text-red-500" />
+              <div>
+                <CardTitle className="text-2xl">{pet.nome}</CardTitle>
+                <p className="text-muted-foreground">
+                  {pet.especie} {pet.raca && `• ${pet.raca}`} • {calcularIdade(pet.data_nascimento)}
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">{pet.tutor?.nome}</p>
+                  <p className="text-sm text-muted-foreground">Tutor</p>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm">
-                  <div><strong>Raça:</strong> {pet.raca || "Não informado"}</div>
-                  <div><strong>Sexo:</strong> {pet.sexo || "Não informado"}</div>
-                  <div><strong>Idade:</strong> {calcularIdade(pet.data_nascimento)}</div>
-                  <div><strong>Cor:</strong> {pet.cor || "Não informado"}</div>
-                  <div><strong>Tutor:</strong> {pet.tutor?.nome}</div>
-                  <div><strong>Microchip:</strong> {pet.microchip || "Não cadastrado"}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">{pet.tutor?.telefone}</p>
+                  <p className="text-sm text-muted-foreground">Telefone</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">{pet.tutor?.email}</p>
+                  <p className="text-sm text-muted-foreground">E-mail</p>
                 </div>
               </div>
             </div>
-
-            {/* Botões de ação */}
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-                <ArrowLeft className="h-4 w-4" />
-                Voltar
-              </Button>
-              <Button variant="outline" size="sm">
-                <Edit className="h-4 w-4" />
-                Editar
-              </Button>
-              <Button variant="outline" size="sm">
-                <Paperclip className="h-4 w-4" />
-                Anexar
-              </Button>
-            </div>
-          </div>
-
-          {/* Sistema de Abas */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-7 mb-6">
-              <TabsTrigger value="dados-animal">Dados do Animal</TabsTrigger>
-              <TabsTrigger value="tutor">Tutor</TabsTrigger>
-              <TabsTrigger value="historico">Histórico Clínico</TabsTrigger>
-              <TabsTrigger value="vacinacao">Vacinação</TabsTrigger>
-              <TabsTrigger value="consultas">Consultas/Exames</TabsTrigger>
-              <TabsTrigger value="tratamento">Tratamento</TabsTrigger>
-              <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="dados-animal">
-              <DadosAnimalTab pet={pet} />
-            </TabsContent>
-
-            <TabsContent value="tutor">
-              <DadosTutorTab tutorId={pet.id_tutor} />
-            </TabsContent>
-
-            <TabsContent value="historico">
-              <HistoricoClinicoTab petId={pet.id} />
-            </TabsContent>
-
-            <TabsContent value="vacinacao">
-              <VacinacaoTab petId={pet.id} />
-            </TabsContent>
-
-            <TabsContent value="consultas">
-              <ConsultasExamesTab petId={pet.id} />
-            </TabsContent>
-
-            <TabsContent value="tratamento">
-              <TratamentoTab petId={pet.id} />
-            </TabsContent>
-
-            <TabsContent value="financeiro">
-              <FinanceiroTab petId={pet.id} />
-            </TabsContent>
-          </Tabs>
+          </CardContent>
         </Card>
 
-        {/* Rodapé */}
-        <Card className="p-4 bg-muted/50">
-          <div className="flex justify-between items-center text-sm text-muted-foreground">
-            <div>
-              <strong>Última atualização:</strong> {format(new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+        {/* Tabs - Prontuário e Vacinas */}
+        <Tabs defaultValue="prontuario" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="prontuario">Prontuário</TabsTrigger>
+            <TabsTrigger value="vacinas">Vacinas</TabsTrigger>
+          </TabsList>
+
+          {/* Tab Prontuário */}
+          <TabsContent value="prontuario" className="space-y-4">
+            <div className="grid gap-4">
+              {consultas.length > 0 ? (
+                consultas.map((consulta) => (
+                  <Card key={consulta.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-lg">
+                            Consulta - {format(new Date(consulta.data_consulta), "dd/MM/yyyy", { locale: ptBR })}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground">
+                            Dr(a). {consulta.veterinario?.nome} • {consulta.hora_consulta}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={consulta.status === "Realizada" ? "default" : "secondary"}>
+                            {consulta.status}
+                          </Badge>
+                          {consulta.status === "Agendada" && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => startEditingConsulta(consulta)}
+                            >
+                              <FileText className="h-4 w-4 mr-2" />
+                              Realizar Consulta
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {editingConsulta === consulta.id ? (
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="anamnese">Anamnese</Label>
+                            <Textarea
+                              id="anamnese"
+                              value={consultaForm.anamnese}
+                              onChange={(e) => setConsultaForm({...consultaForm, anamnese: e.target.value})}
+                              placeholder="Histórico e sintomas relatados..."
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="diagnostico">Diagnóstico</Label>
+                            <Textarea
+                              id="diagnostico"
+                              value={consultaForm.diagnostico}
+                              onChange={(e) => setConsultaForm({...consultaForm, diagnostico: e.target.value})}
+                              placeholder="Diagnóstico médico..."
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="tratamento">Tratamento</Label>
+                            <Textarea
+                              id="tratamento"
+                              value={consultaForm.tratamento}
+                              onChange={(e) => setConsultaForm({...consultaForm, tratamento: e.target.value})}
+                              placeholder="Medicações e recomendações..."
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button onClick={() => handleConsultaUpdate(consulta.id)}>
+                              Finalizar Consulta
+                            </Button>
+                            <Button variant="outline" onClick={() => setEditingConsulta(null)}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {consulta.anamnese && (
+                            <div>
+                              <h4 className="font-medium text-sm">Anamnese:</h4>
+                              <p className="text-sm text-muted-foreground">{consulta.anamnese}</p>
+                            </div>
+                          )}
+                          {consulta.diagnostico && (
+                            <div>
+                              <h4 className="font-medium text-sm">Diagnóstico:</h4>
+                              <p className="text-sm text-muted-foreground">{consulta.diagnostico}</p>
+                            </div>
+                          )}
+                          {consulta.tratamento && (
+                            <div>
+                              <h4 className="font-medium text-sm">Tratamento:</h4>
+                              <p className="text-sm text-muted-foreground">{consulta.tratamento}</p>
+                            </div>
+                          )}
+                          {!consulta.anamnese && !consulta.diagnostico && !consulta.tratamento && (
+                            <p className="text-sm text-muted-foreground italic">
+                              Consulta ainda não realizada
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-center text-muted-foreground">
+                      Nenhuma consulta registrada ainda
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
-            <div>
-              <strong>Assinatura Digital:</strong> Veterinário Responsável
+          </TabsContent>
+
+          {/* Tab Vacinas */}
+          <TabsContent value="vacinas" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Histórico de Vacinas</h3>
+              <Dialog open={isVacinaDialogOpen} onOpenChange={setIsVacinaDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nova Vacina
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Registrar Vacina</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleVacinaSubmit} className="space-y-4">
+                    <div>
+                      <Label htmlFor="nome_vacina">Nome da Vacina *</Label>
+                      <Input
+                        id="nome_vacina"
+                        value={vacinaForm.nome_vacina}
+                        onChange={(e) => setVacinaForm({...vacinaForm, nome_vacina: e.target.value})}
+                        placeholder="Ex: V10, Antirrábica, etc."
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="data_aplicacao">Data de Aplicação *</Label>
+                      <Input
+                        id="data_aplicacao"
+                        type="date"
+                        value={vacinaForm.data_aplicacao}
+                        onChange={(e) => setVacinaForm({...vacinaForm, data_aplicacao: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="proxima_dose">Próxima Dose</Label>
+                      <Input
+                        id="proxima_dose"
+                        type="date"
+                        value={vacinaForm.proxima_dose}
+                        onChange={(e) => setVacinaForm({...vacinaForm, proxima_dose: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="observacoes">Observações</Label>
+                      <Textarea
+                        id="observacoes"
+                        value={vacinaForm.observacoes}
+                        onChange={(e) => setVacinaForm({...vacinaForm, observacoes: e.target.value})}
+                        placeholder="Observações sobre a vacina..."
+                      />
+                    </div>
+                    <div className="flex gap-2 pt-4">
+                      <Button type="submit" disabled={createVacina.isPending}>
+                        Registrar
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setIsVacinaDialogOpen(false)}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
-          </div>
-        </Card>
+
+            <div className="grid gap-4">
+              {vacinas.length > 0 ? (
+                vacinas.map((vacina) => (
+                  <Card key={vacina.id}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Syringe className="h-5 w-5 text-blue-500" />
+                            <h4 className="font-semibold">{vacina.nome_vacina}</h4>
+                          </div>
+                          <div className="flex flex-col md:flex-row gap-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-4 w-4" />
+                              Aplicada: {format(new Date(vacina.data_aplicacao), "dd/MM/yyyy", { locale: ptBR })}
+                            </div>
+                            {vacina.proxima_dose && (
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                Próxima: {format(new Date(vacina.proxima_dose), "dd/MM/yyyy", { locale: ptBR })}
+                              </div>
+                            )}
+                          </div>
+                          {vacina.observacoes && (
+                            <p className="text-sm text-muted-foreground">
+                              <strong>Obs:</strong> {vacina.observacoes}
+                            </p>
+                          )}
+                        </div>
+                        {vacina.proxima_dose && new Date(vacina.proxima_dose) <= new Date() && (
+                          <Badge variant="destructive">
+                            Atrasada
+                          </Badge>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-center text-muted-foreground">
+                      Nenhuma vacina registrada ainda
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );

@@ -10,9 +10,6 @@ export interface Pet {
   data_nascimento: string;
   id_tutor: string;
   data_cadastro: string;
-  sexo?: string;
-  cor?: string;
-  microchip?: string;
   tutor?: {
     nome: string;
     telefone: string;
