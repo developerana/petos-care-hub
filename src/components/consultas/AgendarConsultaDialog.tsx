@@ -61,14 +61,19 @@ const consultaSchema = z.object({
 type ConsultaFormValues = z.infer<typeof consultaSchema>;
 
 interface AgendarConsultaDialogProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function AgendarConsultaDialog({ children }: AgendarConsultaDialogProps) {
-  const [open, setOpen] = useState(false);
+export function AgendarConsultaDialog({ children, open: controlledOpen, onOpenChange: controlledOnOpenChange }: AgendarConsultaDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const { data: pets = [], isLoading: loadingPets } = usePets();
   const { data: veterinarios = [], isLoading: loadingVets } = useVeterinariosAtivos();
   const createConsulta = useCreateConsulta();
+
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = controlledOnOpenChange ?? setInternalOpen;
 
   const form = useForm<ConsultaFormValues>({
     resolver: zodResolver(consultaSchema),
