@@ -24,10 +24,6 @@ export default function Pets() {
     raca: "",
     data_nascimento: "",
     id_tutor: "",
-    sexo: "",
-    cor: "",
-    microchip: "",
-    peso: "",
   });
 
   const { data: pets = [], isLoading } = usePets();
@@ -48,16 +44,9 @@ export default function Pets() {
       await updatePet.mutateAsync({
         id: editingPet.id,
         ...formData,
-        peso: formData.peso ? parseFloat(formData.peso) : null,
       });
     } else {
-      await createPet.mutateAsync({
-        ...formData,
-        sexo: formData.sexo || null,
-        cor: formData.cor || null,
-        microchip: formData.microchip || null,
-        peso: formData.peso ? parseFloat(formData.peso) : null,
-      });
+      await createPet.mutateAsync(formData);
     }
     
     handleCloseDialog();

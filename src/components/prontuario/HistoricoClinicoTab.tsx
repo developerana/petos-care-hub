@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
-import { useConsultasByPet } from "@/hooks/useConsultas";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Plus, Calendar } from "lucide-react";
+import { useConsultasByPet, useUpdateConsulta } from "@/hooks/useConsultas";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { AgendarConsultaDialog } from "@/components/consultas/AgendarConsultaDialog";
 
 interface HistoricoClinicoTabProps {
@@ -13,66 +16,123 @@ interface HistoricoClinicoTabProps {
 }
 
 export default function HistoricoClinicoTab({ petId }: HistoricoClinicoTabProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { data: consultas = [] } = useConsultasByPet(petId);
+  const { data: consultas = [], isLoading } = useConsultasByPet(petId);
+  const updateConsulta = useUpdateConsulta();
+  const [editingConsulta, setEditingConsulta] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    anamnese: "",
+    diagnostico: "",
+    tratamento: "",
+  });
+
+  const startEditingConsulta = (consulta: any) => {
+    setEditingConsulta(consulta);
+    setFormData({
+      anamnese: consulta.anamnese || "",
+      diagnostico: consulta.diagnostico || "",
+      tratamento: consulta.tratamento || "",
+    });
+  };
+
+  const handleConsultaUpdate = async () => {
+    if (!editingConsulta) return;
+
+    await updateConsulta.mutateAsync({
+      id: editingConsulta.id,
+      ...formData,
+      status: "Realizada",
+    });
+
+    setEditingConsulta(null);
+    setFormData({ anamnese: "", diagnostico: "", tratamento: "" });
+  };
+
+  if (isLoading) {
+    return <p>Carregando histórico...</p>;
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button onClick={() => setIsDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Adicionar nova consulta
-        </Button>
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold">Histórico de Consultas</h2>
+        <AgendarConsultaDialog>
+          <Button size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Nova Consulta
+          </Button>
+        </AgendarConsultaDialog>
       </div>
 
-      <AgendarConsultaDialog 
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-      />
-
-      <div className="space-y-4">
+      <div className="space-y-3">
         {consultas.length > 0 ? (
           consultas.map((consulta) => (
             <Card key={consulta.id}>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">
-                      📅 {format(new Date(consulta.data_consulta), "dd/MM/yyyy", { locale: ptBR })}
-                    </CardTitle>
+              <CardContent className="pt-6">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2 flex-1">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <strong>{format(new Date(consulta.data_consulta), "dd/MM/yyyy", { locale: ptBR })}</strong>
+                      <span className="text-muted-foreground">às {consulta.hora_consulta.substring(0, 5)}</span>
+                      <Badge variant={consulta.status === "Realizada" ? "secondary" : "outline"}>
+                        {consulta.status}
+                      </Badge>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      👨‍⚕️ {consulta.veterinario?.nome} • {consulta.hora_consulta}
+                      <strong>Veterinário:</strong> {consulta.veterinario?.nome || "Não atribuído"}
                     </p>
+                    {consulta.anamnese && (
+                      <div className="mt-2 p-3 bg-muted rounded-md">
+                        <p className="text-sm"><strong>Sintomas:</strong> {consulta.anamnese}</p>
+                        {consulta.diagnostico && <p className="text-sm mt-1"><strong>Diagnóstico:</strong> {consulta.diagnostico}</p>}
+                        {consulta.tratamento && <p className="text-sm mt-1"><strong>Prescrição:</strong> {consulta.tratamento}</p>}
+                      </div>
+                    )}
                   </div>
-                  <Badge variant={consulta.status === "Realizada" ? "default" : "secondary"}>
-                    {consulta.status}
-                  </Badge>
+                  {consulta.status === "Agendada" && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" onClick={() => startEditingConsulta(consulta)}>
+                          Registrar Atendimento
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Registrar Atendimento</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label>Anamnese / Sintomas</Label>
+                            <Textarea
+                              value={formData.anamnese}
+                              onChange={(e) => setFormData({ ...formData, anamnese: e.target.value })}
+                              placeholder="Descreva os sintomas relatados..."
+                            />
+                          </div>
+                          <div>
+                            <Label>Diagnóstico</Label>
+                            <Textarea
+                              value={formData.diagnostico}
+                              onChange={(e) => setFormData({ ...formData, diagnostico: e.target.value })}
+                              placeholder="Diagnóstico do veterinário..."
+                            />
+                          </div>
+                          <div>
+                            <Label>Tratamento / Prescrição</Label>
+                            <Textarea
+                              value={formData.tratamento}
+                              onChange={(e) => setFormData({ ...formData, tratamento: e.target.value })}
+                              placeholder="Tratamento prescrito..."
+                            />
+                          </div>
+                          <Button onClick={handleConsultaUpdate} disabled={updateConsulta.isPending}>
+                            Salvar e Marcar como Realizada
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {consulta.anamnese && (
-                  <div>
-                    <p className="font-medium text-sm">Sintomas:</p>
-                    <p className="text-sm text-muted-foreground">{consulta.anamnese}</p>
-                  </div>
-                )}
-                {consulta.diagnostico && (
-                  <div>
-                    <p className="font-medium text-sm">Diagnóstico:</p>
-                    <p className="text-sm text-muted-foreground">{consulta.diagnostico}</p>
-                  </div>
-                )}
-                {consulta.tratamento && (
-                  <div>
-                    <p className="font-medium text-sm">Prescrição:</p>
-                    <p className="text-sm text-muted-foreground">{consulta.tratamento}</p>
-                  </div>
-                )}
-                {!consulta.anamnese && !consulta.diagnostico && !consulta.tratamento && (
-                  <p className="text-sm text-muted-foreground italic">
-                    Consulta ainda não realizada
-                  </p>
-                )}
               </CardContent>
             </Card>
           ))

@@ -8,9 +8,6 @@ export interface Tutor {
   telefone: string;
   email: string;
   data_cadastro: string;
-  cpf: string | null;
-  rg: string | null;
-  endereco: string | null;
 }
 
 export const useTutores = () => {
@@ -25,6 +22,23 @@ export const useTutores = () => {
       if (error) throw error;
       return data as Tutor[];
     },
+  });
+};
+
+export const useTutor = (id: string) => {
+  return useQuery({
+    queryKey: ["tutor", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tutores")
+        .select("*")
+        .eq("id", id)
+        .single();
+      
+      if (error) throw error;
+      return data as Tutor;
+    },
+    enabled: !!id,
   });
 };
 
@@ -90,23 +104,6 @@ export const useUpdateTutor = () => {
         variant: "destructive",
       });
     },
-  });
-};
-
-export const useTutor = (id: string) => {
-  return useQuery({
-    queryKey: ["tutores", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tutores")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      if (error) throw error;
-      return data as Tutor;
-    },
-    enabled: !!id,
   });
 };
 

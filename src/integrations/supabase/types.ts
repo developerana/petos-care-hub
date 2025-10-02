@@ -382,7 +382,6 @@ export type Database = {
           id_tutor: string
           microchip: string | null
           nome: string
-          peso: number | null
           raca: string | null
           sexo: string | null
         }
@@ -395,7 +394,6 @@ export type Database = {
           id_tutor: string
           microchip?: string | null
           nome: string
-          peso?: number | null
           raca?: string | null
           sexo?: string | null
         }
@@ -408,7 +406,6 @@ export type Database = {
           id_tutor?: string
           microchip?: string | null
           nome?: string
-          peso?: number | null
           raca?: string | null
           sexo?: string | null
         }
@@ -421,42 +418,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      prescricoes: {
-        Row: {
-          data_cadastro: string
-          data_prescricao: string
-          id: string
-          id_consulta: string | null
-          id_pet: string
-          id_veterinario: string | null
-          medicamento: string
-          observacoes: string | null
-          posologia: string
-        }
-        Insert: {
-          data_cadastro?: string
-          data_prescricao: string
-          id?: string
-          id_consulta?: string | null
-          id_pet: string
-          id_veterinario?: string | null
-          medicamento: string
-          observacoes?: string | null
-          posologia: string
-        }
-        Update: {
-          data_cadastro?: string
-          data_prescricao?: string
-          id?: string
-          id_consulta?: string | null
-          id_pet?: string
-          id_veterinario?: string | null
-          medicamento?: string
-          observacoes?: string | null
-          posologia?: string
-        }
-        Relationships: []
       }
       profiles: {
         Row: {
@@ -511,8 +472,6 @@ export type Database = {
           id: string
           id_consulta: string | null
           id_pet: string
-          id_veterinario: string | null
-          medicacoes: Json | null
           recomendacoes: string | null
           status: string
           tratamento_prescrito: string
@@ -525,8 +484,6 @@ export type Database = {
           id?: string
           id_consulta?: string | null
           id_pet: string
-          id_veterinario?: string | null
-          medicacoes?: Json | null
           recomendacoes?: string | null
           status?: string
           tratamento_prescrito: string
@@ -539,8 +496,6 @@ export type Database = {
           id?: string
           id_consulta?: string | null
           id_pet?: string
-          id_veterinario?: string | null
-          medicacoes?: Json | null
           recomendacoes?: string | null
           status?: string
           tratamento_prescrito?: string
@@ -549,36 +504,27 @@ export type Database = {
       }
       tutores: {
         Row: {
-          cpf: string | null
           data_cadastro: string
           email: string
-          endereco: string | null
           id: string
           id_clinica: string | null
           nome: string
-          rg: string | null
           telefone: string
         }
         Insert: {
-          cpf?: string | null
           data_cadastro?: string
           email: string
-          endereco?: string | null
           id?: string
           id_clinica?: string | null
           nome: string
-          rg?: string | null
           telefone: string
         }
         Update: {
-          cpf?: string | null
           data_cadastro?: string
           email?: string
-          endereco?: string | null
           id?: string
           id_clinica?: string | null
           nome?: string
-          rg?: string | null
           telefone?: string
         }
         Relationships: [
@@ -648,7 +594,6 @@ export type Database = {
           data_cadastro: string
           id: string
           id_pet: string
-          id_veterinario: string | null
           nome_vacina: string
           observacoes: string | null
           proxima_dose: string | null
@@ -658,7 +603,6 @@ export type Database = {
           data_cadastro?: string
           id?: string
           id_pet: string
-          id_veterinario?: string | null
           nome_vacina: string
           observacoes?: string | null
           proxima_dose?: string | null
@@ -668,7 +612,6 @@ export type Database = {
           data_cadastro?: string
           id?: string
           id_pet?: string
-          id_veterinario?: string | null
           nome_vacina?: string
           observacoes?: string | null
           proxima_dose?: string | null

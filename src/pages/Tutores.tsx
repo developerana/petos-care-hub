@@ -19,9 +19,6 @@ export default function Tutores() {
     nome: "",
     telefone: "",
     email: "",
-    cpf: "",
-    rg: "",
-    endereco: "",
   });
 
   const { data: tutores = [], isLoading } = useTutores();
