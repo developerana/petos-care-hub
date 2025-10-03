@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import DashboardTutor from "./pages/DashboardTutor";
 import Tutores from "./pages/Tutores";
 import Pets from "./pages/Pets";
 import Veterinarios from "./pages/Veterinarios";
@@ -43,9 +44,17 @@ const App = () => (
             }
           />
           <Route
+            path="/dashboard-tutor"
+            element={
+              <ProtectedRoute allowedProfiles={["tutor"]}>
+                <DashboardTutor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/tutores"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
                 <Tutores />
               </ProtectedRoute>
             }
@@ -53,7 +62,7 @@ const App = () => (
           <Route
             path="/pets"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
                 <Pets />
               </ProtectedRoute>
             }
@@ -61,7 +70,7 @@ const App = () => (
           <Route
             path="/veterinarios"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedProfiles={["administrador", "recepcionista"]}>
                 <Veterinarios />
               </ProtectedRoute>
             }
@@ -69,7 +78,7 @@ const App = () => (
           <Route
             path="/agendamentos"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
                 <Agendamentos />
               </ProtectedRoute>
             }
