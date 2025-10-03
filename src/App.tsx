@@ -9,7 +9,9 @@ import Pets from "./pages/Pets";
 import Veterinarios from "./pages/Veterinarios";
 import Agendamentos from "./pages/Agendamentos";
 import Prontuario from "./pages/Prontuario";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,12 +33,55 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/tutores" element={<Tutores />} />
-          <Route path="/pets" element={<Pets />} />
-          <Route path="/veterinarios" element={<Veterinarios />} />
-          <Route path="/agendamentos" element={<Agendamentos />} />
-          <Route path="/prontuario/:petId" element={<Prontuario />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tutores"
+            element={
+              <ProtectedRoute>
+                <Tutores />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pets"
+            element={
+              <ProtectedRoute>
+                <Pets />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/veterinarios"
+            element={
+              <ProtectedRoute>
+                <Veterinarios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agendamentos"
+            element={
+              <ProtectedRoute>
+                <Agendamentos />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/prontuario/:petId"
+            element={
+              <ProtectedRoute>
+                <Prontuario />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
