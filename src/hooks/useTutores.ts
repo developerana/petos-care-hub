@@ -25,23 +25,6 @@ export const useTutores = () => {
   });
 };
 
-export const useTutor = (id: string) => {
-  return useQuery({
-    queryKey: ["tutor", id],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("tutores")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      if (error) throw error;
-      return data as Tutor;
-    },
-    enabled: !!id,
-  });
-};
-
 export const useCreateTutor = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();

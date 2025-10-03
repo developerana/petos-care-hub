@@ -4,15 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import DashboardTutor from "./pages/DashboardTutor";
 import Tutores from "./pages/Tutores";
 import Pets from "./pages/Pets";
 import Veterinarios from "./pages/Veterinarios";
 import Agendamentos from "./pages/Agendamentos";
 import Prontuario from "./pages/Prontuario";
-import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,63 +31,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard-tutor"
-            element={
-              <ProtectedRoute allowedProfiles={["tutor"]}>
-                <DashboardTutor />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/tutores"
-            element={
-              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
-                <Tutores />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/pets"
-            element={
-              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
-                <Pets />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/veterinarios"
-            element={
-              <ProtectedRoute allowedProfiles={["administrador", "recepcionista"]}>
-                <Veterinarios />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/agendamentos"
-            element={
-              <ProtectedRoute allowedProfiles={["administrador", "recepcionista", "veterinario"]}>
-                <Agendamentos />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/prontuario/:petId"
-            element={
-              <ProtectedRoute>
-                <Prontuario />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/tutores" element={<Tutores />} />
+          <Route path="/pets" element={<Pets />} />
+          <Route path="/veterinarios" element={<Veterinarios />} />
+          <Route path="/agendamentos" element={<Agendamentos />} />
+          <Route path="/prontuario/:petId" element={<Prontuario />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
