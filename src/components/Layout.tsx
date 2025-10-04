@@ -12,13 +12,14 @@ import {
   Menu
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Label } from "recharts";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const navItems = [
-  { path: "/", label: "Dashboard", icon: Home },
+  { path: "/dashboard", label: "Dashboard", icon: Home },
   { path: "/tutores", label: "Tutores", icon: Users },
   { path: "/pets", label: "Pets", icon: Heart },
   { path: "/veterinarios", label: "Veterinários", icon: Stethoscope },
