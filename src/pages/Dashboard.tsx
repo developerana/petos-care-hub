@@ -163,13 +163,15 @@ export default function Dashboard() {
                     <span className="font-medium">Cadastrar Veterinários</span>
                   </Button>
                 </Link>
-                <Button
-                  variant="outline"
-                  className="w-full h-20 flex flex-col gap-2 hover:border-info hover:bg-info/5"
-                >
-                  <UserCog className="h-5 w-5 text-info" />
-                  <span className="font-medium">Cadastrar Recepcionistas</span>
-                </Button>
+                <Link to="/cadastrar-usuario">
+                  <Button
+                    variant="outline"
+                    className="w-full h-20 flex flex-col gap-2 hover:border-info hover:bg-info/5"
+                  >
+                    <UserCog className="h-5 w-5 text-info" />
+                    <span className="font-medium">Cadastrar Usuários</span>
+                  </Button>
+                </Link>
               </div>
             </div>
 

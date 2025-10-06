@@ -26,7 +26,7 @@ const Auth = () => {
       const validated = loginSchema.parse({ email, password });
       setLoading(true);
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: validated.email,
         password: validated.password,
       });
@@ -37,9 +37,37 @@ const Auth = () => {
         } else {
           toast.error(error.message);
         }
-      } else {
+        return;
+      }
+
+      if (data.user) {
+        // Buscar perfil do usuário
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles" as any)
+          .select("tipo_perfil")
+          .eq("id", data.user.id)
+          .single() as { data: any; error: any };
+
+        if (profileError) {
+          toast.error("Erro ao buscar perfil do usuário");
+          return;
+        }
+
         toast.success("Login realizado com sucesso!");
-        navigate("/");
+
+        // Redirecionar baseado no tipo de perfil
+        switch (profile?.tipo_perfil) {
+          case "tutor":
+            navigate("/tutordashboard");
+            break;
+          case "administrador":
+          case "veterinario":
+          case "recepcionista":
+            navigate("/dashboard");
+            break;
+          default:
+            navigate("/");
+        }
       }
     } catch (error) {
       if (error instanceof z.ZodError) {

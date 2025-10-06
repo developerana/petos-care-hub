@@ -115,7 +115,9 @@ const TutorDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar userType="tutor" />
+      <Sidebar>
+        <div />
+      </Sidebar>
       
       <main className="flex-1 p-6 ml-64">
         {/* Header */}

@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { ReactNode, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { 
@@ -8,11 +8,12 @@ import {
   Heart, 
   Stethoscope, 
   Calendar, 
-  FileText,
+  LogOut,
   Menu
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Label } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface LayoutProps {
   children: ReactNode;
@@ -28,12 +29,42 @@ const navItems = [
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState("");
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles" as any)
+          .select("nome, tipo_perfil")
+          .eq("id", user.id)
+          .single() as { data: any };
+
+        if (profile) {
+          setUserName(profile.nome || "");
+          setUserType(profile.tipo_perfil || "");
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logout realizado com sucesso!");
+    navigate("/login");
+  };
 
   const NavContent = () => (
     <nav className="space-y-1 p-4">
       <div className="pb-6 mb-6 border-b border-sidebar-border">
         <h2 className="text-xl font-bold text-sidebar-foreground">PetOS</h2>
-        <p className="text-sm text-sidebar-foreground/70">Administrador</p>
+        <p className="text-sm text-sidebar-foreground/70">{userName}</p>
+        <p className="text-xs text-sidebar-foreground/50 capitalize">{userType}</p>
       </div>
       {navItems.map(({ path, label, icon: Icon }) => (
         <Link key={path} to={path}>
@@ -49,6 +80,17 @@ export default function Layout({ children }: LayoutProps) {
           </Button>
         </Link>
       ))}
+      
+      <div className="pt-6 mt-6 border-t border-sidebar-border">
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-destructive/10 hover:text-destructive"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-5 w-5" />
+          Sair
+        </Button>
+      </div>
     </nav>
   );
 

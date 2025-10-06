@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import Login from "./pages/Login";
 import Registrar from "./pages/Resgistrar";
+import CadastrarUsuario from "./pages/CadastrarUsuario";
 import Tutores from "./pages/Tutores";
 import Pets from "./pages/Pets";
 import Veterinarios from "./pages/Veterinarios";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/registrar" element={<Registrar />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tutordashboard" element={<TutorDashboard />} />
+          <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/pets" element={<Pets />} />
           <Route path="/veterinarios" element={<Veterinarios />} />
