@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "@/components/Layout";
+import { AnimalHeader } from "@/components/AnimalHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Syringe, Calendar, FileText, Heart, User, Phone, Mail } from "lucide-react";
+import { Plus, Syringe, Calendar, FileText } from "lucide-react";
 import { usePet } from "@/hooks/usePets";
 import { useConsultasByPet, useUpdateConsulta } from "@/hooks/useConsultas";
 import { useVacinasByPet, useCreateVacina } from "@/hooks/useVacinas";
@@ -111,48 +112,21 @@ export default function Prontuario() {
     );
   }
 
+  const animalData = {
+    name: pet.nome,
+    species: pet.especie,
+    breed: pet.raca || "SRD",
+    sex: pet.sexo || "Não informado",
+    age: calcularIdade(pet.data_nascimento),
+    tutor: pet.tutor?.nome || "Não informado",
+    microchip: pet.microchip || "Não informado",
+    id: pet.id,
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header - Informações do Pet */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <Heart className="h-8 w-8 text-red-500" />
-              <div>
-                <CardTitle className="text-2xl">{pet.nome}</CardTitle>
-                <p className="text-muted-foreground">
-                  {pet.especie} {pet.raca && `• ${pet.raca}`} • {calcularIdade(pet.data_nascimento)}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{pet.tutor?.nome}</p>
-                  <p className="text-sm text-muted-foreground">Tutor</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{pet.tutor?.telefone}</p>
-                  <p className="text-sm text-muted-foreground">Telefone</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">{pet.tutor?.email}</p>
-                  <p className="text-sm text-muted-foreground">E-mail</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <AnimalHeader animal={animalData} />
 
         {/* Tabs - Prontuário e Vacinas */}
         <Tabs defaultValue="prontuario" className="space-y-4">
