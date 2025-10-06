@@ -14,7 +14,7 @@ import { z } from "zod";
 const userSchema = z.object({
   nome: z.string().min(3, "Nome deve ter no mínimo 3 caracteres"),
   email: z.string().email("E-mail inválido"),
-  tipo_perfil: z.enum(["veterinario", "recepcionista"], {
+  tipo_perfil: z.enum(["veterinario", "recepcionista", "tutor"], {
     errorMap: () => ({ message: "Selecione um tipo de perfil" }),
   }),
 });
@@ -185,6 +185,7 @@ const CadastrarUsuario = () => {
                     <SelectContent>
                       <SelectItem value="veterinario">Veterinário</SelectItem>
                       <SelectItem value="recepcionista">Recepcionista</SelectItem>
+                      <SelectItem value="tutor">Tutor</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
