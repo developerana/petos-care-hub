@@ -9,16 +9,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Syringe, Calendar, FileText } from "lucide-react";
+import { Plus, Syringe, Calendar, FileText, Activity, Pill, DollarSign, ClipboardList } from "lucide-react";
 import { usePet } from "@/hooks/usePets";
 import { useConsultasByPet, useUpdateConsulta } from "@/hooks/useConsultas";
 import { useVacinasByPet, useCreateVacina } from "@/hooks/useVacinas";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+
+type SectionType = "prontuario" | "vacinas" | "historico" | "tratamento" | "financeiro";
 
 export default function Prontuario() {
   const { petId } = useParams<{ petId: string }>();
+  const [activeSection, setActiveSection] = useState<SectionType>("prontuario");
   const [isVacinaDialogOpen, setIsVacinaDialogOpen] = useState(false);
   const [editingConsulta, setEditingConsulta] = useState<string | null>(null);
   const [vacinaForm, setVacinaForm] = useState({
@@ -123,20 +126,19 @@ export default function Prontuario() {
     id: pet.id,
   };
 
-  return (
-    <Layout>
-      <div className="space-y-6">
-        <AnimalHeader animal={animalData} />
+  const sidebarItems = [
+    { id: "prontuario" as SectionType, label: "Prontuário", icon: FileText },
+    { id: "vacinas" as SectionType, label: "Vacinas", icon: Syringe },
+    { id: "historico" as SectionType, label: "Histórico", icon: ClipboardList },
+    { id: "tratamento" as SectionType, label: "Tratamento", icon: Pill },
+    { id: "financeiro" as SectionType, label: "Financeiro", icon: DollarSign },
+  ];
 
-        {/* Tabs - Prontuário e Vacinas */}
-        <Tabs defaultValue="prontuario" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="prontuario">Prontuário</TabsTrigger>
-            <TabsTrigger value="vacinas">Vacinas</TabsTrigger>
-          </TabsList>
-
-          {/* Tab Prontuário */}
-          <TabsContent value="prontuario" className="space-y-4">
+  const renderContent = () => {
+    switch (activeSection) {
+      case "prontuario":
+        return (
+          <div className="space-y-4">
             <div className="grid gap-4">
               {consultas.length > 0 ? (
                 consultas.map((consulta) => (
@@ -247,10 +249,12 @@ export default function Prontuario() {
                 </Card>
               )}
             </div>
-          </TabsContent>
-
-          {/* Tab Vacinas */}
-          <TabsContent value="vacinas" className="space-y-4">
+          </div>
+        );
+      
+      case "vacinas":
+        return (
+          <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">Histórico de Vacinas</h3>
               <Dialog open={isVacinaDialogOpen} onOpenChange={setIsVacinaDialogOpen}>
@@ -368,8 +372,86 @@ export default function Prontuario() {
                 </Card>
               )}
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        );
+      
+      case "historico":
+        return (
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-center text-muted-foreground">
+                Histórico completo em desenvolvimento
+              </p>
+            </CardContent>
+          </Card>
+        );
+      
+      case "tratamento":
+        return (
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-center text-muted-foreground">
+                Seção de tratamento em desenvolvimento
+              </p>
+            </CardContent>
+          </Card>
+        );
+      
+      case "financeiro":
+        return (
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-center text-muted-foreground">
+                Seção financeira em desenvolvimento
+              </p>
+            </CardContent>
+          </Card>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="space-y-6">
+        <AnimalHeader animal={animalData} />
+
+        <div className="flex gap-6">
+          {/* Sidebar de navegação */}
+          <aside className="w-64 flex-shrink-0">
+            <Card>
+              <CardContent className="p-4">
+                <nav className="space-y-1">
+                  {sidebarItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => setActiveSection(item.id)}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                          activeSection === item.id
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </CardContent>
+            </Card>
+          </aside>
+
+          {/* Conteúdo principal */}
+          <div className="flex-1 min-w-0">
+            {renderContent()}
+          </div>
+        </div>
       </div>
     </Layout>
   );
