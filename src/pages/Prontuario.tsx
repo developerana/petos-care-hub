@@ -122,7 +122,11 @@ export default function Prontuario() {
     sex: pet.sexo || "Não informado",
     age: calcularIdade(pet.data_nascimento),
     tutor: pet.tutor?.nome || "Não informado",
+    tutorPhone: pet.tutor?.telefone,
+    tutorEmail: pet.tutor?.email,
     microchip: pet.microchip || "Não informado",
+    color: pet.cor || undefined,
+    weight: pet.peso || undefined,
     id: pet.id,
   };
 
