@@ -217,7 +217,7 @@ const TutorDashboard = () => {
           </div>
 
           {/* Sidebar Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 self-start">
             {/* Upcoming Appointments */}
             <Card className="shadow-soft">
               <CardHeader>
