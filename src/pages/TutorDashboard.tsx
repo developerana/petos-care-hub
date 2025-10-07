@@ -16,10 +16,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Layout";
 import PetCard from "@/components/PetCard";
+import { AgendarConsultaDialog } from "@/components/dialogs/AgendarConsultaDialog";
+import { usePets } from "@/hooks/usePets";
+import { useConsultas } from "@/hooks/useConsultas";
 
 const TutorDashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [agendarDialogOpen, setAgendarDialogOpen] = useState(false);
+  const [selectedPet, setSelectedPet] = useState<{ id: string; name: string } | null>(null);
+
+  const { data: petsData = [] } = usePets();
+  const { data: consultasData = [] } = useConsultas();
 
   // Mock data for tutor's pets
   const myPets = [
@@ -101,11 +109,18 @@ const TutorDashboard = () => {
   ];
 
   const handleViewPetDetails = (petId: number) => {
-    console.log("View pet details:", petId);
+    const pet = myPets.find(p => p.id === petId);
+    if (pet) {
+      navigate(`/prontuario/${petId}`);
+    }
   };
 
   const handleScheduleAppointment = (petId: number) => {
-    console.log("Schedule appointment for pet:", petId);
+    const pet = myPets.find(p => p.id === petId);
+    if (pet) {
+      setSelectedPet({ id: petId.toString(), name: pet.name });
+      setAgendarDialogOpen(true);
+    }
   };
 
   const filteredPets = myPets.filter(pet =>
@@ -287,6 +302,15 @@ const TutorDashboard = () => {
           </div>
         </div>
       </main>
+
+      {selectedPet && (
+        <AgendarConsultaDialog
+          open={agendarDialogOpen}
+          onOpenChange={setAgendarDialogOpen}
+          petId={selectedPet.id}
+          petName={selectedPet.name}
+        />
+      )}
     </div>
   );
 };
