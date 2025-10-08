@@ -9,8 +9,7 @@ import {
   Stethoscope, 
   Calendar, 
   LogOut,
-  Menu,
-  FileText
+  Menu
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,15 +19,12 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const allNavItems = [
-  { path: "/dashboard", label: "Dashboard", icon: Home, roles: ["administrador", "veterinario", "recepcionista"] },
-  { path: "/tutordashboard", label: "Dashboard", icon: Home, roles: ["tutor"] },
-  { path: "/tutores", label: "Tutores", icon: Users, roles: ["administrador", "veterinario", "recepcionista"] },
-  { path: "/pets", label: "Pets", icon: Heart, roles: ["administrador", "veterinario", "recepcionista"] },
-  { path: "/pets", label: "Pets Cadastrados", icon: Heart, roles: ["tutor"] },
-  { path: "/veterinarios", label: "Veterinários", icon: Stethoscope, roles: ["administrador", "veterinario", "recepcionista"] },
-  { path: "/prontuario-eletronico", label: "Prontuários", icon: FileText, roles: ["administrador", "veterinario", "recepcionista"] },
-  { path: "/agendamentos", label: "Agendamentos", icon: Calendar, roles: ["administrador", "veterinario", "recepcionista", "tutor"] },
+const navItems = [
+  { path: "/dashboard", label: "Dashboard", icon: Home },
+  { path: "/tutores", label: "Tutores", icon: Users },
+  { path: "/pets", label: "Pets", icon: Heart },
+  { path: "/veterinarios", label: "Veterinários", icon: Stethoscope },
+  { path: "/agendamentos", label: "Agendamentos", icon: Calendar },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -56,10 +52,6 @@ export default function Layout({ children }: LayoutProps) {
 
     fetchUserProfile();
   }, []);
-
-  const navItems = allNavItems.filter(item => 
-    item.roles.includes(userType)
-  );
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
