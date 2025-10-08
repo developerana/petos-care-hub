@@ -12,6 +12,7 @@ import CadastrarUsuario from "./pages/CadastrarUsuario";
 import Tutores from "./pages/Tutores";
 import Pets from "./pages/Pets";
 import Veterinarios from "./pages/Veterinarios";
+import Recepcionistas from "./pages/Recepcionistas";
 import Agendamentos from "./pages/Agendamentos";
 import Prontuario from "./pages/ProntuarioEletronico";
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/pets" element={<Pets />} />
           <Route path="/veterinarios" element={<Veterinarios />} />
+          <Route path="/recepcionistas" element={<Recepcionistas />} />
           <Route path="/agendamentos" element={<Agendamentos />} />
           <Route path="/prontuario/:petId" element={<Prontuario />} />
           <Route path="*" element={<NotFound />} />

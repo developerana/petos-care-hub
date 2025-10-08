@@ -9,7 +9,8 @@ import {
   Stethoscope, 
   Calendar, 
   LogOut,
-  Menu
+  Menu,
+  UserCircle
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +25,7 @@ const navItems = [
   { path: "/tutores", label: "Tutores", icon: Users },
   { path: "/pets", label: "Pets", icon: Heart },
   { path: "/veterinarios", label: "Veterinários", icon: Stethoscope },
+  { path: "/recepcionistas", label: "Recepcionistas", icon: UserCircle },
   { path: "/agendamentos", label: "Agendamentos", icon: Calendar },
 ];
 
