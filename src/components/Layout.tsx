@@ -19,12 +19,13 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const navItems = [
-  { path: "/dashboard", label: "Dashboard", icon: Home },
-  { path: "/tutores", label: "Tutores", icon: Users },
-  { path: "/pets", label: "Pets", icon: Heart },
-  { path: "/veterinarios", label: "Veterinários", icon: Stethoscope },
-  { path: "/agendamentos", label: "Agendamentos", icon: Calendar },
+const allNavItems = [
+  { path: "/dashboard", label: "Dashboard", icon: Home, roles: ["administrador", "veterinario", "atendente"] },
+  { path: "/tutordashboard", label: "Dashboard", icon: Home, roles: ["tutor"] },
+  { path: "/tutores", label: "Tutores", icon: Users, roles: ["administrador", "veterinario", "atendente"] },
+  { path: "/pets", label: "Pets Cadastrados", icon: Heart, roles: ["tutor", "administrador", "veterinario", "atendente"] },
+  { path: "/veterinarios", label: "Veterinários", icon: Stethoscope, roles: ["administrador", "atendente"] },
+  { path: "/agendamentos", label: "Agendamentos", icon: Calendar, roles: ["tutor", "administrador", "veterinario", "atendente"] },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -52,6 +53,10 @@ export default function Layout({ children }: LayoutProps) {
 
     fetchUserProfile();
   }, []);
+
+  const navItems = allNavItems.filter(item => 
+    item.roles.includes(userType)
+  );
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
