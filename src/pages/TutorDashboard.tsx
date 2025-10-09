@@ -17,8 +17,11 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Layout";
 import PetCard from "@/components/PetCard";
 import { AgendarConsultaDialog } from "@/components/dialogs/AgendarConsultaDialog";
-import { usePets } from "@/hooks/usePets";
+import { usePetsByTutor, type Pet } from "@/hooks/usePets";
 import { useConsultas } from "@/hooks/useConsultas";
+import { useCurrentTutor } from "@/hooks/useCurrentTutor";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const TutorDashboard = () => {
   const navigate = useNavigate();
@@ -26,11 +29,13 @@ const TutorDashboard = () => {
   const [agendarDialogOpen, setAgendarDialogOpen] = useState(false);
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string } | null>(null);
 
-  const { data: petsData = [] } = usePets();
+  const { data: currentTutor } = useCurrentTutor();
+  const tutorId = (currentTutor as any)?.id_tutor || "";
+  const { data: myPets = [], isLoading: isLoadingPets } = usePetsByTutor(tutorId);
   const { data: consultasData = [] } = useConsultas();
 
-  // Mock data for tutor's pets
-  const myPets = [
+  // Mock data removido - agora usando dados reais
+  const mockPets = [
     { 
       id: 1, 
       name: "Logan", 
@@ -108,25 +113,53 @@ const TutorDashboard = () => {
     }
   ];
 
-  const handleViewPetDetails = (petId: number) => {
-    const pet = myPets.find(p => p.id === petId);
-    if (pet) {
-      navigate(`/prontuario/${petId}`);
-    }
+  const handleViewPetDetails = (petId: string) => {
+    navigate(`/prontuario/${petId}`);
   };
 
-  const handleScheduleAppointment = (petId: number) => {
+  const handleScheduleAppointment = (petId: string) => {
     const pet = myPets.find(p => p.id === petId);
     if (pet) {
-      setSelectedPet({ id: petId.toString(), name: pet.name });
+      setSelectedPet({ id: petId, name: pet.nome });
       setAgendarDialogOpen(true);
     }
   };
 
+  const calcularIdade = (dataNascimento: string) => {
+    const hoje = new Date();
+    const nascimento = new Date(dataNascimento);
+    const diffTime = Math.abs(hoje.getTime() - nascimento.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 30) {
+      return `${diffDays} dias`;
+    } else if (diffDays < 365) {
+      return `${Math.floor(diffDays / 30)} meses`;
+    } else {
+      return `${Math.floor(diffDays / 365)} anos`;
+    }
+  };
+
   const filteredPets = myPets.filter(pet =>
-    pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    pet.breed.toLowerCase().includes(searchQuery.toLowerCase())
+    pet.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pet.especie.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (pet.raca && pet.raca.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  if (isLoadingPets) {
+    return (
+      <div className="flex min-h-screen bg-background">
+        <Sidebar>
+          <div />
+        </Sidebar>
+        <main className="flex-1 p-6">
+          <div className="flex items-center justify-center h-64">
+            <p>Carregando...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -221,13 +254,71 @@ const TutorDashboard = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredPets.map((pet) => (
-                <PetCard
-                  key={pet.id}
-                  pet={pet}
-                  onViewDetails={handleViewPetDetails}
-                  onScheduleAppointment={handleScheduleAppointment}
-                />
+                <Card key={pet.id} className="shadow-soft">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-full bg-accent">
+                          <Heart className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold">{pet.nome}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {pet.especie} {pet.raca && `- ${pet.raca}`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Idade:</span>
+                        <span className="font-medium">{calcularIdade(pet.data_nascimento)}</span>
+                      </div>
+                      {pet.peso && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Peso:</span>
+                          <span className="font-medium">{pet.peso}kg</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Cadastrado em:</span>
+                        <span className="font-medium">
+                          {format(new Date(pet.data_cadastro), "dd/MM/yyyy", { locale: ptBR })}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleViewPetDetails(pet.id)}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Prontuário
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleScheduleAppointment(pet.id)}
+                      >
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Agendar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
+              {filteredPets.length === 0 && (
+                <div className="col-span-2 text-center py-8">
+                  <p className="text-muted-foreground">
+                    {searchQuery ? "Nenhum pet encontrado" : "Você ainda não possui pets cadastrados"}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
