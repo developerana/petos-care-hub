@@ -137,7 +137,7 @@ const CadastrarUsuario = () => {
               Cadastrar Novo Usuário
             </CardTitle>
             <CardDescription>
-              Cadastre tutores, veterinários e recepcionistas da clínica.                     <strong>PetOS@2024</strong>
+              Cadastre tutores, veterinários e recepcionistas da clínica.                     
             </CardDescription>
           </CardHeader>
           <CardContent>
