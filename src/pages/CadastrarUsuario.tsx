@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +21,20 @@ const userSchema = z.object({
 });
 const CadastrarUsuario = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
     tipo_perfil: ""
   });
+
+  useEffect(() => {
+    const tipo = searchParams.get("tipo");
+    if (tipo && ["veterinario", "recepcionista", "tutor"].includes(tipo)) {
+      setFormData(prev => ({ ...prev, tipo_perfil: tipo }));
+    }
+  }, [searchParams]);
   const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
