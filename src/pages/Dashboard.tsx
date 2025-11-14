@@ -179,7 +179,7 @@ export default function Dashboard() {
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-3">Clientes</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Link to="/tutores">
+                <Link to="/cadastrar-usuario?tipo=tutor">
                   <Button
                     variant="outline"
                     className="w-full h-20 flex flex-col gap-2 hover:border-success hover:bg-success/5"
