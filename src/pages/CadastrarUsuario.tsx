@@ -23,18 +23,18 @@ const CadastrarUsuario = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const tipoFixo = searchParams.get("tipo");
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
-    tipo_perfil: ""
+    tipo_perfil: tipoFixo || ""
   });
 
   useEffect(() => {
-    const tipo = searchParams.get("tipo");
-    if (tipo && ["veterinario", "recepcionista", "tutor"].includes(tipo)) {
-      setFormData(prev => ({ ...prev, tipo_perfil: tipo }));
+    if (tipoFixo && ["veterinario", "recepcionista", "tutor"].includes(tipoFixo)) {
+      setFormData(prev => ({ ...prev, tipo_perfil: tipoFixo }));
     }
-  }, [searchParams]);
+  }, [tipoFixo]);
   const handleChange = (field: string, value: string) => {
     setFormData({
       ...formData,
@@ -142,10 +142,16 @@ const CadastrarUsuario = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UserPlus className="h-6 w-6" />
-              Cadastrar Novo Usuário
+              {tipoFixo === "veterinario" ? "Cadastrar Veterinário" : 
+               tipoFixo === "recepcionista" ? "Cadastrar Recepcionista" :
+               tipoFixo === "tutor" ? "Cadastrar Tutor" :
+               "Cadastrar Novo Usuário"}
             </CardTitle>
             <CardDescription>
-              Cadastre tutores, veterinários e recepcionistas da clínica.                     
+              {tipoFixo === "veterinario" ? "Cadastre um novo veterinário da clínica" :
+               tipoFixo === "recepcionista" ? "Cadastre um novo recepcionista da clínica" :
+               tipoFixo === "tutor" ? "Cadastre um novo tutor" :
+               "Cadastre tutores, veterinários e recepcionistas da clínica"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -161,19 +167,21 @@ const CadastrarUsuario = () => {
                   <Input id="email" type="email" placeholder="email@exemplo.com" value={formData.email} onChange={e => handleChange("email", e.target.value)} required className="mt-1" />
                 </div>
 
-                <div>
-                  <Label htmlFor="tipo_perfil">Tipo de Perfil *</Label>
-                  <Select value={formData.tipo_perfil} onValueChange={value => handleChange("tipo_perfil", value)}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Selecione o tipo de perfil" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="veterinario">Veterinário</SelectItem>
-                      <SelectItem value="recepcionista">Recepcionista</SelectItem>
-                      <SelectItem value="tutor">Tutor</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {!tipoFixo && (
+                  <div>
+                    <Label htmlFor="tipo_perfil">Tipo de Perfil *</Label>
+                    <Select value={formData.tipo_perfil} onValueChange={value => handleChange("tipo_perfil", value)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Selecione o tipo de perfil" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="veterinario">Veterinário</SelectItem>
+                        <SelectItem value="recepcionista">Recepcionista</SelectItem>
+                        <SelectItem value="tutor">Tutor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <div className="bg-muted p-4 rounded-lg">
                   <p className="text-sm text-muted-foreground">
