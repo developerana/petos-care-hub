@@ -11,7 +11,9 @@ import {
   Search,
   Syringe,
   FileText,
-  Settings
+  Settings,
+  Grid3x3,
+  List
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Layout";
@@ -28,6 +30,7 @@ const TutorDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [agendarDialogOpen, setAgendarDialogOpen] = useState(false);
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string } | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data: currentTutor } = useCurrentTutor();
   const tutorId = (currentTutor as any)?.id_tutor || "";
@@ -246,80 +249,156 @@ const TutorDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Pets Grid */}
+          {/* Pets Grid/List */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">Meus Pets ({filteredPets.length})</h2>
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredPets.map((pet) => (
-                <Card key={pet.id} className="shadow-soft">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-full bg-accent">
-                          <Heart className="h-5 w-5 text-primary" />
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredPets.map((pet) => (
+                  <Card key={pet.id} className="shadow-soft hover:shadow-lg transition-shadow">
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-full bg-accent">
+                            <Heart className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold">{pet.nome}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {pet.especie} {pet.raca && `- ${pet.raca}`}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="text-lg font-semibold">{pet.nome}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {pet.especie} {pet.raca && `- ${pet.raca}`}
-                          </p>
-                        </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Heart className="h-4 w-4" />
+                        </Button>
                       </div>
-                    </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Idade:</span>
-                        <span className="font-medium">{calcularIdade(pet.data_nascimento)}</span>
-                      </div>
-                      {pet.peso && (
+                      
+                      <div className="space-y-2 mb-4">
                         <div className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">Peso:</span>
-                          <span className="font-medium">{pet.peso}kg</span>
+                          <span className="text-muted-foreground">Idade:</span>
+                          <span className="font-medium">{calcularIdade(pet.data_nascimento)}</span>
                         </div>
-                      )}
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Cadastrado em:</span>
-                        <span className="font-medium">
-                          {format(new Date(pet.data_cadastro), "dd/MM/yyyy", { locale: ptBR })}
-                        </span>
+                        {pet.peso && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Peso:</span>
+                            <span className="font-medium">{pet.peso}kg</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Cadastrado em:</span>
+                          <span className="font-medium">
+                            {format(new Date(pet.data_cadastro), "dd/MM/yyyy", { locale: ptBR })}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleViewPetDetails(pet.id)}
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Prontuário
-                      </Button>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="flex-1"
-                        onClick={() => handleScheduleAppointment(pet.id)}
-                      >
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Agendar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {filteredPets.length === 0 && (
-                <div className="col-span-2 text-center py-8">
-                  <p className="text-muted-foreground">
-                    {searchQuery ? "Nenhum pet encontrado" : "Você ainda não possui pets cadastrados"}
-                  </p>
-                </div>
-              )}
-            </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1"
+                          onClick={() => handleViewPetDetails(pet.id)}
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          Detalhes
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="flex-1"
+                          onClick={() => handleScheduleAppointment(pet.id)}
+                        >
+                          <Calendar className="h-4 w-4 mr-2" />
+                          Agendar
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {filteredPets.length === 0 && (
+                  <div className="col-span-2 text-center py-8">
+                    <p className="text-muted-foreground">
+                      {searchQuery ? "Nenhum pet encontrado" : "Você ainda não possui pets cadastrados"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredPets.map((pet) => (
+                  <Card key={pet.id} className="shadow-soft hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="p-3 rounded-full bg-accent">
+                            <Heart className="h-6 w-6 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="text-lg font-semibold">{pet.nome}</h3>
+                              <Badge variant="outline" className="text-xs">
+                                {pet.especie}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {pet.raca || "Sem raça definida"} • {calcularIdade(pet.data_nascimento)} • {pet.peso ? `${pet.peso}kg` : "Peso não informado"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewPetDetails(pet.id)}
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            Detalhes
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => handleScheduleAppointment(pet.id)}
+                          >
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Agendar
+                          </Button>
+                          <Button variant="ghost" size="icon">
+                            <Heart className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {filteredPets.length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      {searchQuery ? "Nenhum pet encontrado" : "Você ainda não possui pets cadastrados"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Sidebar Info */}
