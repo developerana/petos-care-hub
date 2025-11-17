@@ -34,11 +34,70 @@ const TutorDashboard = () => {
 
   const { data: currentTutor } = useCurrentTutor();
   const tutorId = (currentTutor as any)?.id_tutor || "";
-  const { data: myPets = [], isLoading: isLoadingPets } = usePetsByTutor(tutorId);
+  const { data: realPets = [], isLoading: isLoadingPets } = usePetsByTutor(tutorId);
   const { data: consultasData = [] } = useConsultas();
 
-  // Mock data removido - agora usando dados reais
-  const mockPets = [
+  // Mock data para simulação
+  const mockPets: Pet[] = [
+    { 
+      id: "mock-1",
+      nome: "Logan",
+      especie: "Canino",
+      raca: "Golden Retriever",
+      data_nascimento: "2020-03-15",
+      data_cadastro: new Date().toISOString(),
+      id_tutor: tutorId || "mock-tutor",
+      sexo: "Macho",
+      peso: 32,
+      cor: "Dourado",
+      microchip: "123456789"
+    },
+    { 
+      id: "mock-2",
+      nome: "Marley",
+      especie: "Canino",
+      raca: "Labrador",
+      data_nascimento: "2019-11-08",
+      data_cadastro: new Date().toISOString(),
+      id_tutor: tutorId || "mock-tutor",
+      sexo: "Macho",
+      peso: 28,
+      cor: "Amarelo",
+      microchip: "987654321"
+    },
+    { 
+      id: "mock-3",
+      nome: "Nolla",
+      especie: "Canino",
+      raca: "Border Collie",
+      data_nascimento: "2021-07-22",
+      data_cadastro: new Date().toISOString(),
+      id_tutor: tutorId || "mock-tutor",
+      sexo: "Fêmea",
+      peso: 20,
+      cor: "Preto e Branco",
+      microchip: "456789123"
+    },
+    { 
+      id: "mock-4",
+      nome: "Pé Grande",
+      especie: "Canino",
+      raca: "São Bernardo",
+      data_nascimento: "2018-05-10",
+      data_cadastro: new Date().toISOString(),
+      id_tutor: tutorId || "mock-tutor",
+      sexo: "Macho",
+      peso: 65,
+      cor: "Marrom e Branco",
+      microchip: "789123456"
+    }
+  ];
+
+  // Usar pets reais se existirem, senão usar mockados
+  const myPets = realPets.length > 0 ? realPets : mockPets;
+
+  // Remover mock antigo
+  const oldMockPets = [
     { 
       id: 1, 
       name: "Logan", 
@@ -84,7 +143,7 @@ const TutorDashboard = () => {
     {
       id: 1,
       petName: "Logan",
-      date: "25 Jan, 2024",
+      date: "28 Nov, 2025",
       time: "14:00",
       vet: "Dr. Maria Silva",
       type: "Consulta de rotina"
@@ -92,10 +151,18 @@ const TutorDashboard = () => {
     {
       id: 2,
       petName: "Marley",
-      date: "28 Jan, 2024", 
+      date: "30 Nov, 2025", 
       time: "10:30",
       vet: "Dr. João Santos",
       type: "Vacinação"
+    },
+    {
+      id: 3,
+      petName: "Nolla",
+      date: "02 Dez, 2025", 
+      time: "15:00",
+      vet: "Dr. Ana Costa",
+      type: "Check-up"
     }
   ];
 
@@ -103,15 +170,22 @@ const TutorDashboard = () => {
     {
       id: 1,
       type: "vaccine",
-      message: "Vacina do Nolla está atrasada",
-      date: "2 dias atrás",
+      message: "Vacina antirrábica do Pé Grande vence em 5 dias",
+      date: "Hoje",
       urgent: true
     },
     {
       id: 2,
       type: "appointment",
       message: "Consulta do Logan amanhã às 14:00",
-      date: "1 dia",
+      date: "Amanhã",
+      urgent: true
+    },
+    {
+      id: 3,
+      type: "info",
+      message: "Lembrete: vermifugação do Marley está próxima",
+      date: "2 dias atrás",
       urgent: false
     }
   ];
