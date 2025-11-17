@@ -16,7 +16,7 @@ import {
   List
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Layout";
+import TutorLayout from "@/components/TutorLayout";
 import PetCard from "@/components/PetCard";
 import { AgendarConsultaDialog } from "@/components/dialogs/AgendarConsultaDialog";
 import { usePetsByTutor, type Pet } from "@/hooks/usePets";
@@ -151,25 +151,18 @@ const TutorDashboard = () => {
 
   if (isLoadingPets) {
     return (
-      <div className="flex min-h-screen bg-background">
-        <Sidebar>
-          <div />
-        </Sidebar>
+      <TutorLayout>
         <main className="flex-1 p-6">
           <div className="flex items-center justify-center h-64">
             <p>Carregando...</p>
           </div>
         </main>
-      </div>
+      </TutorLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar>
-        <div />
-      </Sidebar>
-      
+    <TutorLayout>
       <main className="flex-1 p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -471,17 +464,17 @@ const TutorDashboard = () => {
             </Card>
           </div>
         </div>
-      </main>
 
-      {selectedPet && (
-        <AgendarConsultaDialog
-          open={agendarDialogOpen}
-          onOpenChange={setAgendarDialogOpen}
-          petId={selectedPet.id}
-          petName={selectedPet.name}
-        />
-      )}
-    </div>
+        {selectedPet && (
+          <AgendarConsultaDialog
+            open={agendarDialogOpen}
+            onOpenChange={setAgendarDialogOpen}
+            petId={selectedPet.id}
+            petName={selectedPet.name}
+          />
+        )}
+      </main>
+    </TutorLayout>
   );
 };
 
