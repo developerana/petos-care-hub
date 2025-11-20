@@ -21,17 +21,23 @@ export interface Pet {
   };
 }
 
-export const usePets = () => {
+export const usePets = (includeArquivados = false) => {
   return useQuery({
-    queryKey: ["pets"],
+    queryKey: ["pets", includeArquivados],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("pets")
         .select(`
           *,
           tutor:tutores(nome, telefone, email)
         `)
         .order("data_cadastro", { ascending: false });
+      
+      if (!includeArquivados) {
+        query = query.eq("arquivado", false);
+      }
+      
+      const { data, error } = await query;
       
       if (error) throw error;
       return data as Pet[];
@@ -135,6 +141,42 @@ export const useUpdatePet = () => {
       toast({
         title: "Erro",
         description: "Erro ao atualizar pet: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+export const useArquivarPet = () => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, data_falecimento }: { id: string; data_falecimento?: string }) => {
+      const { data, error } = await supabase
+        .from("pets")
+        .update({ 
+          arquivado: true,
+          data_falecimento: data_falecimento || new Date().toISOString().split('T')[0]
+        })
+        .eq("id", id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pets"] });
+      toast({
+        title: "Pet arquivado",
+        description: "O pet foi arquivado com sucesso.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro",
+        description: "Erro ao arquivar pet: " + error.message,
         variant: "destructive",
       });
     },

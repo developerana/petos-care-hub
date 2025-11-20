@@ -374,8 +374,10 @@ export type Database = {
       }
       pets: {
         Row: {
+          arquivado: boolean | null
           cor: string | null
           data_cadastro: string
+          data_falecimento: string | null
           data_nascimento: string
           especie: string
           id: string
@@ -387,8 +389,10 @@ export type Database = {
           sexo: string | null
         }
         Insert: {
+          arquivado?: boolean | null
           cor?: string | null
           data_cadastro?: string
+          data_falecimento?: string | null
           data_nascimento: string
           especie: string
           id?: string
@@ -400,8 +404,10 @@ export type Database = {
           sexo?: string | null
         }
         Update: {
+          arquivado?: boolean | null
           cor?: string | null
           data_cadastro?: string
+          data_falecimento?: string | null
           data_nascimento?: string
           especie?: string
           id?: string
