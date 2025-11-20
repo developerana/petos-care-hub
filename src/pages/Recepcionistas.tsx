@@ -34,16 +34,20 @@ export default function Recepcionistas() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (editingRecepcionista) {
-      await updateRecepcionista.mutateAsync({
-        id: editingRecepcionista.id,
-        ...formData,
-      });
-    } else {
-      await createRecepcionista.mutateAsync(formData);
+    try {
+      if (editingRecepcionista) {
+        await updateRecepcionista.mutateAsync({
+          id: editingRecepcionista.id,
+          ...formData,
+        });
+      } else {
+        await createRecepcionista.mutateAsync(formData);
+      }
+      
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Erro ao salvar recepcionista:", error);
     }
-    
-    handleCloseDialog();
   };
 
   const handleEdit = (recepcionista: Recepcionista) => {
