@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Edit, Heart, Calendar, FileText } from "lucide-react";
-import { usePets, useCreatePet, useUpdatePet, type Pet } from "@/hooks/usePets";
+import { Plus, Search, Edit, Heart, Calendar, FileText, Archive, MoreVertical } from "lucide-react";
+import { usePets, useCreatePet, useUpdatePet, useArquivarPet, type Pet } from "@/hooks/usePets";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTutores } from "@/hooks/useTutores";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -18,6 +19,7 @@ export default function Pets() {
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPet, setEditingPet] = useState<Pet | null>(null);
+  const [mostrarArquivados, setMostrarArquivados] = useState(false);
   const [formData, setFormData] = useState({
     nome: "",
     especie: "",
@@ -26,16 +28,23 @@ export default function Pets() {
     id_tutor: "",
   });
 
-  const { data: pets = [], isLoading } = usePets();
+  const { data: pets = [], isLoading } = usePets(mostrarArquivados);
   const { data: tutores = [] } = useTutores();
   const createPet = useCreatePet();
   const updatePet = useUpdatePet();
+  const arquivarPet = useArquivarPet();
 
   const filteredPets = pets.filter(pet =>
     pet.nome.toLowerCase().includes(search.toLowerCase()) ||
     pet.especie.toLowerCase().includes(search.toLowerCase()) ||
     pet.tutor?.nome.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleArquivar = async (petId: string) => {
+    if (confirm("Tem certeza que deseja arquivar este pet? Esta ação indica que o pet faleceu.")) {
+      await arquivarPet.mutateAsync({ id: petId });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,13 +122,21 @@ export default function Pets() {
             </p>
           </div>
           
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Pet
-              </Button>
-            </DialogTrigger>
+          <div className="flex gap-2">
+            <Button
+              variant={mostrarArquivados ? "default" : "outline"}
+              onClick={() => setMostrarArquivados(!mostrarArquivados)}
+            >
+              <Archive className="h-4 w-4 mr-2" />
+              {mostrarArquivados ? "Ocultar Arquivados" : "Ver Arquivados"}
+            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Pet
+                </Button>
+              </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>
@@ -200,6 +217,7 @@ export default function Pets() {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Search */}
@@ -242,19 +260,34 @@ export default function Pets() {
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(pet)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
                       <Link to={`/prontuario/${pet.id}`}>
                         <Button variant="outline" size="sm">
                           <FileText className="h-4 w-4" />
                           Prontuário
                         </Button>
                       </Link>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEdit(pet)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          {!mostrarArquivados && (
+                            <DropdownMenuItem 
+                              onClick={() => handleArquivar(pet.id)}
+                              className="text-destructive"
+                            >
+                              <Archive className="h-4 w-4 mr-2" />
+                              Arquivar (Falecido)
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </CardContent>
