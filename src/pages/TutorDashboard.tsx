@@ -340,8 +340,14 @@ const TutorDashboard = () => {
             
             {viewMode === "grid" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredPets.map((pet) => (
-                  <Card key={pet.id} className="shadow-soft hover:shadow-lg transition-shadow">
+                 {filteredPets.map((pet) => (
+                  <Card key={pet.id} className="shadow-soft hover:shadow-lg transition-shadow overflow-hidden">
+                    <div className="relative w-full aspect-[16/9] bg-muted">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Heart className="h-12 w-12 text-muted-foreground/30" />
+                      </div>
+                    </div>
+                    
                     <CardContent className="pt-6">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
@@ -412,13 +418,13 @@ const TutorDashboard = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredPets.map((pet) => (
+                 {filteredPets.map((pet) => (
                   <Card key={pet.id} className="shadow-soft hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 flex-1">
-                          <div className="p-3 rounded-full bg-accent">
-                            <Heart className="h-6 w-6 text-primary" />
+                          <div className="relative w-20 h-20 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <Heart className="h-8 w-8 text-muted-foreground/30" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
